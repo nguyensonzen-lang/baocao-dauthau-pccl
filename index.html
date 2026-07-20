@@ -258,20 +258,21 @@ tbody td:first-child{text-align:center;color:#aaa;font-size:11px;vertical-align:
     table-layout:fixed!important;border-collapse:collapse!important;
     font-size:7.5pt!important
   }
-  /* Phân bổ độ rộng cột MAIN TABLE (12 cột, tổng ~270mm) */
+  /* Phân bổ độ rộng cột MAIN TABLE (13 cột, tổng ~270mm) */
   #main-tbody tr:first-child td:nth-child(1),
   table thead tr th:nth-child(1){width:5mm!important}   /* # */
-  table thead tr th:nth-child(2){width:22mm!important}  /* Mã CT */
-  table thead tr th:nth-child(3){width:18mm!important}  /* Người PT */
-  table thead tr th:nth-child(4){width:34mm!important}  /* Tên CT */
-  table thead tr th:nth-child(5){width:18mm!important}  /* Hình thức */
-  table thead tr th:nth-child(6){width:16mm!important}  /* Lĩnh vực */
-  table thead tr th:nth-child(7){width:14mm!important}  /* Trạng thái */
-  table thead tr th:nth-child(8){width:18mm!important}  /* Giai đoạn */
-  table thead tr th:nth-child(9){width:26mm!important}  /* BC TG */
-  table thead tr th:nth-child(10){width:11mm!important} /* TV */
-  table thead tr th:nth-child(11){width:14mm!important} /* Ngày đóng */
-  table thead tr th:nth-child(12){width:36mm!important} /* Lần LV */
+  table thead tr th:nth-child(2){width:20mm!important}  /* Mã CT */
+  table thead tr th:nth-child(3){width:16mm!important}  /* Người PT */
+  table thead tr th:nth-child(4){width:30mm!important}  /* Tên CT */
+  table thead tr th:nth-child(5){width:16mm!important}  /* Hình thức */
+  table thead tr th:nth-child(6){width:14mm!important}  /* Lĩnh vực */
+  table thead tr th:nth-child(7){width:18mm!important}  /* Đơn vị MT */
+  table thead tr th:nth-child(8){width:12mm!important}  /* Trạng thái */
+  table thead tr th:nth-child(9){width:16mm!important}  /* Giai đoạn */
+  table thead tr th:nth-child(10){width:24mm!important} /* BC TG */
+  table thead tr th:nth-child(11){width:10mm!important} /* TV */
+  table thead tr th:nth-child(12){width:13mm!important} /* Ngày đóng */
+  table thead tr th:nth-child(13){width:32mm!important} /* Lần LV */
 
   thead th{
     padding:4px 3px!important;font-size:7.5pt!important;
@@ -293,18 +294,19 @@ tbody td:first-child{text-align:center;color:#aaa;font-size:11px;vertical-align:
   tbody tr:nth-child(even){background:#f8f9fb!important}
   .warn-table tbody tr:nth-child(even){background:#fffaf8!important}
 
-  /* WARN TABLE – 11 cột */
+  /* WARN TABLE – 12 cột */
   .warn-table thead tr th:nth-child(1){width:5mm!important}
-  .warn-table thead tr th:nth-child(2){width:22mm!important}
-  .warn-table thead tr th:nth-child(3){width:18mm!important}
-  .warn-table thead tr th:nth-child(4){width:34mm!important}
-  .warn-table thead tr th:nth-child(5){width:18mm!important}
-  .warn-table thead tr th:nth-child(6){width:16mm!important}
+  .warn-table thead tr th:nth-child(2){width:20mm!important}
+  .warn-table thead tr th:nth-child(3){width:16mm!important}
+  .warn-table thead tr th:nth-child(4){width:30mm!important}
+  .warn-table thead tr th:nth-child(5){width:16mm!important}
+  .warn-table thead tr th:nth-child(6){width:14mm!important}
   .warn-table thead tr th:nth-child(7){width:18mm!important}
-  .warn-table thead tr th:nth-child(8){width:12mm!important}
-  .warn-table thead tr th:nth-child(9){width:12mm!important}
-  .warn-table thead tr th:nth-child(10){width:24mm!important}
-  .warn-table thead tr th:nth-child(11){width:34mm!important}
+  .warn-table thead tr th:nth-child(8){width:16mm!important}
+  .warn-table thead tr th:nth-child(9){width:10mm!important}
+  .warn-table thead tr th:nth-child(10){width:10mm!important}
+  .warn-table thead tr th:nth-child(11){width:22mm!important}
+  .warn-table thead tr th:nth-child(12){width:30mm!important}
   .warn-table thead th{
     padding:4px 3px!important;font-size:7.5pt!important;
     white-space:normal!important;background:#e65100!important;color:#fff!important
@@ -452,6 +454,10 @@ tbody td:first-child{text-align:center;color:#aaa;font-size:11px;vertical-align:
       <select id="f-lv" onchange="applyFilters()">
         <option value="">Tất cả</option>
       </select>
+      <label>Đơn vị MT:</label>
+      <select id="f-dvmt" onchange="applyFilters()">
+        <option value="">Tất cả</option>
+      </select>
       <label>Người PT:</label>
       <select id="f-pt" onchange="applyFilters()">
         <option value="">Tất cả</option>
@@ -476,6 +482,7 @@ tbody td:first-child{text-align:center;color:#aaa;font-size:11px;vertical-align:
               <th>Tên công trình</th>
               <th>Hình thức</th>
               <th>Lĩnh vực</th>
+              <th>Đơn vị MT</th>
               <th>Trạng thái</th>
               <th>Giai đoạn</th>
               <th>BC TG / Đóng thầu</th>
@@ -507,6 +514,7 @@ tbody td:first-child{text-align:center;color:#aaa;font-size:11px;vertical-align:
               <th>Tên công trình</th>
               <th>Hình thức</th>
               <th>Lĩnh vực</th>
+              <th>Đơn vị MT</th>
               <th>Giai đoạn</th>
               <th>Trung vị</th>
               <th>Mức độ</th>
@@ -543,15 +551,15 @@ tbody td:first-child{text-align:center;color:#aaa;font-size:11px;vertical-align:
 // ================================================================
 // CONFIG
 // Sheet: "Tổng hợp nguồn dữ liệu" – GID 670748913 (65 cột, có BM)
-// Query: select D,F,G,H,L,N,AA,M,AC,BM offset 1
+// Query: select D,F,G,H,L,N,AA,M,AB,AC,BM offset 1
 //   0=D(MaCT) 1=F(NguoiPT) 2=G(TenCT) 3=H(LinhVuc) 4=L(NgayPH) 5=N(NgayDong)
-//   6=AA(TrangThai) 7=M(HinhThuc) 8=AC(LanLV) 9=BM(TrungVi)
+//   6=AA(TrangThai) 7=M(HinhThuc) 8=AB(DonViMuaThau) 9=AC(LanLV) 10=BM(TrungVi)
 // offset 1: bỏ dòng header labels (dòng 2 spreadsheet);
 //   gviz auto-detect dòng 1 (metadata timestamp) làm header
 // ================================================================
 const SHEET_ID  = '1E7fUY1bh-KXyYd2FD5rmmUmKlNCdbbYsEDbt8JyUUNM';
 const SHEET_GID = '670748913';
-const CI = {MACT:0,PT:1,TEN:2,LINHVUC:3,NGAYPH:4,NGAYDONG:5,TT:6,HT:7,LANLV:8,TV:9};
+const CI = {MACT:0,PT:1,TEN:2,LINHVUC:3,NGAYPH:4,NGAYDONG:5,TT:6,HT:7,DVMT:8,LANLV:9,TV:10};
 
 let BC_DATE=null, allData=[], filtered=[], _timer=null;
 
@@ -700,7 +708,7 @@ function loadData(){
   window.google.visualization.Query=window.google.visualization.Query||{};
   window.google.visualization.Query.setResponse=function(r){clearTimeout(_timer);_processAll(r);};
 
-  const q=encodeURIComponent('select D,F,G,H,L,N,AA,M,AC,BM offset 1');
+  const q=encodeURIComponent('select D,F,G,H,L,N,AA,M,AB,AC,BM offset 1');
   const url='https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?gid='+SHEET_GID+'&tqx=out:json&tq='+q;
 
   const old=document.getElementById('_gviz');
@@ -751,6 +759,7 @@ function _processAll(resp){
         nguoipt :getStr(c[CI.PT]).trim(),
         tenct   :getStr(c[CI.TEN]).trim(),
         linhvuc :getStr(c[CI.LINHVUC]).trim(),
+        dvmt    :getStr(c[CI.DVMT]).trim(),
         trangthai:aa, ht, gd, bcTg, tvNum, tvCell, lv,
         ngayDStr:dN?fmtDate(dN):'—'
       });
@@ -776,6 +785,11 @@ function buildFilters(){
   fLV.innerHTML='<option value="">Tất cả</option>';
   lvs.forEach(l=>{const o=document.createElement('option');o.value=l;o.textContent=l;fLV.appendChild(o);});
 
+  const dvmts=[...new Set(allData.map(r=>r.dvmt).filter(Boolean))].sort();
+  const fDVMT=document.getElementById('f-dvmt');
+  fDVMT.innerHTML='<option value="">Tất cả</option>';
+  dvmts.forEach(d=>{const o=document.createElement('option');o.value=d;o.textContent=d;fDVMT.appendChild(o);});
+
   const pts=[...new Set(allData.map(r=>r.nguoipt).filter(Boolean))].sort();
   const fPT=document.getElementById('f-pt');
   fPT.innerHTML='<option value="">Tất cả</option>';
@@ -786,6 +800,7 @@ function applyFilters(){
   const fGD=document.getElementById('f-gd').value;
   const fHT=document.getElementById('f-ht').value;
   const fLV=document.getElementById('f-lv').value;
+  const fDVMT=document.getElementById('f-dvmt').value;
   const fPT=document.getElementById('f-pt').value;
   const fTT=document.getElementById('f-tt').value;
   const fSR=(document.getElementById('f-search').value||'').trim().toLowerCase();
@@ -793,6 +808,7 @@ function applyFilters(){
     if(fGD&&r.gd.code!==fGD) return false;
     if(fHT&&r.ht!==fHT) return false;
     if(fLV&&r.linhvuc!==fLV) return false;
+    if(fDVMT&&r.dvmt!==fDVMT) return false;
     if(fPT&&r.nguoipt!==fPT) return false;
     if(fTT&&r.trangthai!==fTT) return false;
     if(fSR&&!(r.tenct||'').toLowerCase().includes(fSR)) return false;
@@ -804,7 +820,7 @@ function applyFilters(){
 }
 
 function resetFilters(){
-  ['f-gd','f-ht','f-lv','f-pt','f-tt'].forEach(id=>document.getElementById(id).value='');
+  ['f-gd','f-ht','f-lv','f-dvmt','f-pt','f-tt'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('f-search').value='';
   applyFilters();
 }
@@ -847,6 +863,7 @@ function renderMainTable(){
       '<td style="min-width:160px;max-width:220px" title="'+escH(r.tenct)+'">'+escH(r.tenct||'—')+'</td>'+
       '<td style="white-space:nowrap"><span class="'+htD.cls+'">'+escH(htD.txt)+'</span></td>'+
       '<td style="white-space:nowrap;font-size:11px;color:#444">'+escH(r.linhvuc||'—')+'</td>'+
+      '<td style="white-space:nowrap;font-size:11px;color:#444">'+escH(r.dvmt||'—')+'</td>'+
       '<td><span class="'+ttCls+'">'+escH(r.trangthai)+'</span></td>'+
       '<td><span class="'+gdCls+'">'+r.gd.label+'</span></td>'+
       '<td style="min-width:140px"><span class="'+r.bcTg.cls+'">'+escH(r.bcTg.txt)+'</span></td>'+
@@ -949,7 +966,7 @@ function renderWarnTable(){
   const tb=document.getElementById('warn-tbody');
   tb.innerHTML='';
   if(!list.length){
-    tb.innerHTML='<tr><td colspan="10" style="text-align:center;padding:28px;color:#999">Không có gói thầu nào có Trung vị &gt;20 ngày</td></tr>';
+    tb.innerHTML='<tr><td colspan="12" style="text-align:center;padding:28px;color:#999">Không có gói thầu nào có Trung vị &gt;20 ngày</td></tr>';
     return;
   }
   const mx=list[0].tvNum;
@@ -978,6 +995,7 @@ function renderWarnTable(){
       '<td style="max-width:180px" title="'+escH(r.tenct)+'">'+escH(r.tenct||'—')+'</td>'+
       '<td><span class="'+htD.cls+'">'+escH(htD.txt)+'</span></td>'+
       '<td style="white-space:nowrap;font-size:11px;color:#444">'+escH(r.linhvuc||'—')+'</td>'+
+      '<td style="white-space:nowrap;font-size:11px;color:#444">'+escH(r.dvmt||'—')+'</td>'+
       '<td><span class="'+gdCls+'">'+r.gd.label+'</span></td>'+
       '<td><div class="tv-bar-wrap"><div class="tv-bar-bg"><div class="tv-bar-fill" style="width:'+pct+'%"></div></div><strong style="color:#e65100">'+r.tvNum+' ngày</strong></div></td>'+
       '<td><span class="sev '+sev.c+'">'+sev.t+'</span></td>'+
