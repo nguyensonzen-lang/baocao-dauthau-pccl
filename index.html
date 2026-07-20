@@ -77,6 +77,12 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;font-
 .filter-bar input[type=text]{border:1px solid #d0d7e2;border-radius:6px;padding:4px 10px;font-size:12px;color:#333;background:#f8fafc;outline:none;width:200px;transition:border-color .15s}
 .filter-bar input[type=text]:focus{border-color:#1a3a6b;background:#fff}
 .btn-reset{background:#e8edf5;border:none;border-radius:6px;padding:5px 12px;font-size:12px;color:#1a3a6b;cursor:pointer;font-weight:600}
+.btn-refresh{background:#1a3a6b;border:none;border-radius:6px;padding:5px 13px;font-size:12px;color:#fff;cursor:pointer;font-weight:600;display:flex;align-items:center;gap:5px}
+.btn-refresh:disabled{opacity:.6;cursor:wait}
+.btn-refresh .spin-ico{display:inline-block}
+.btn-refresh.loading .spin-ico{animation:spin .7s linear infinite}
+.refresh-info{font-size:11px;color:rgba(255,255,255,.7);margin-left:38px;margin-top:2px}
+.refresh-info span{color:#90caf9;font-weight:600}
 .filter-count{margin-left:auto;font-size:12px;color:#555;white-space:nowrap}
 .filter-count strong{color:#1a3a6b;font-weight:700}
 
@@ -362,7 +368,12 @@ tbody td:first-child{text-align:center;color:#aaa;font-size:11px;vertical-align:
       <span class="header-title">Theo dõi Tiến độ Đấu thầu – PCCL</span>
     </div>
     <div class="header-sub">Phân tích gói thầu: Đang xử lý &amp; Quá hạn &nbsp;•&nbsp; Tự thực hiện, Đấu thầu rộng rãi, Chỉ định thầu</div>
-    <div class="header-date">Ngày báo cáo: <span id="hdr-date">—</span> &nbsp;|&nbsp; Nguồn: Google Sheet N2027_Tong hop Theo dõi hồ sơ mở thầu</div>
+    <div class="header-date">Ngày báo cáo: <span id="hdr-date">—</span> &nbsp;|&nbsp; Nguồn: Google Sheet N2027_Tong hop Theo dõi hồ sơ mở thầu &nbsp;|&nbsp;
+      <button class="btn-refresh" id="btn-refresh" onclick="manualRefresh()">
+        <span class="spin-ico">🔄</span> Cập nhật
+      </button>
+    </div>
+    <div class="refresh-info">Cập nhật lúc: <span id="hdr-updated">—</span> &nbsp;•&nbsp; Tự động làm mới sau: <span id="hdr-countdown">5:00</span></div>
   </div>
 
   <!-- KPI -->
@@ -562,6 +573,8 @@ const SHEET_GID = '670748913';
 const CI = {MACT:0,PT:1,TEN:2,LINHVUC:3,NGAYPH:4,NGAYDONG:5,TT:6,HT:7,DVMT:8,LANLV:9,TV:10};
 
 let BC_DATE=null, allData=[], filtered=[], _timer=null;
+const AUTO_REFRESH_MS = 5 * 60 * 1000; // 5 phút
+let _autoTimer=null, _countdownTimer=null, _countdownSec=300;
 
 // ================================================================
 // UTILS
@@ -729,6 +742,37 @@ function showErr(msg){
   document.getElementById('error-box').style.display='block';
 }
 
+function startCountdown(){
+  clearInterval(_countdownTimer);
+  _countdownSec=AUTO_REFRESH_MS/1000;
+  const el=document.getElementById('hdr-countdown');
+  function tick(){
+    if(_countdownSec<=0){el.textContent='Đang tải...';return;}
+    const m=Math.floor(_countdownSec/60);
+    const s=_countdownSec%60;
+    el.textContent=m+':'+(s<10?'0':'')+s;
+    _countdownSec--;
+  }
+  tick();
+  _countdownTimer=setInterval(tick,1000);
+}
+
+function manualRefresh(){
+  clearInterval(_autoTimer);
+  clearInterval(_countdownTimer);
+  const btn=document.getElementById('btn-refresh');
+  btn.disabled=true;
+  btn.classList.add('loading');
+  loadData();
+}
+
+function _setRefreshBtn(loading){
+  const btn=document.getElementById('btn-refresh');
+  if(!btn) return;
+  btn.disabled=loading;
+  loading?btn.classList.add('loading'):btn.classList.remove('loading');
+}
+
 // ================================================================
 // PROCESS
 // ================================================================
@@ -768,6 +812,23 @@ function _processAll(resp){
     buildFilters(); applyFilters(); updateKPI(); updateDist(); renderWarnTable();
     document.getElementById('loading').style.display='none';
     document.getElementById('main').style.display='block';
+
+    // Hiện giờ cập nhật
+    const now=new Date();
+    const hh=String(now.getHours()).padStart(2,'0');
+    const mm=String(now.getMinutes()).padStart(2,'0');
+    const ss=String(now.getSeconds()).padStart(2,'0');
+    const updEl=document.getElementById('hdr-updated');
+    if(updEl) updEl.textContent=hh+':'+mm+':'+ss+' – '+fmtDate(now);
+
+    // Reset nút refresh
+    _setRefreshBtn(false);
+
+    // Khởi động auto-refresh 5 phút
+    clearInterval(_autoTimer);
+    _autoTimer=setInterval(()=>{ loadData(); }, AUTO_REFRESH_MS);
+    startCountdown();
+
   }catch(e){showErr('Lỗi xử lý: '+e.message);}
 }
 
