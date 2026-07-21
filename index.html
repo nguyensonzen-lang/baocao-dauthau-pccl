@@ -129,6 +129,9 @@ tbody td:first-child{text-align:center;color:#aaa;font-size:11px;vertical-align:
 .tv-ok{color:#1a3a6b;font-weight:600}
 .tv-empty{color:#ccc}
 .lv-cell{font-size:11px;color:#444;max-width:260px;word-break:break-word;line-height:1.5}
+.dvmt-cell{font-size:11px;color:#444;min-width:120px;max-width:180px}
+.dvmt-item{display:block;padding:1px 0;border-bottom:1px dashed #e8ecf2;line-height:1.4}
+.dvmt-item:last-child{border-bottom:none}
 .lv-entry{padding:4px 0 4px 7px;border-left:3px solid #d0d7e2;margin-bottom:5px}
 .lv-entry:last-child{margin-bottom:0}
 .lv-entry.lv-first{border-left-color:#1a3a6b}
@@ -906,6 +909,17 @@ function toggleLvExtra(uid,btn){
 }
 
 // ================================================================
+// BUILD DVMT HTML – tách từng đơn vị mua thầu theo dòng (Alt+Enter = \n)
+// ================================================================
+function buildDvmtHtml(dvmtStr){
+  if(!dvmtStr||dvmtStr==='—') return '<span style="color:#ccc">—</span>';
+  const lines=String(dvmtStr).replace(/\r/g,'').split('\n').map(l=>l.trim()).filter(Boolean);
+  if(!lines.length) return '<span style="color:#ccc">—</span>';
+  if(lines.length===1) return escH(lines[0]);
+  return lines.map(l=>'<span class="dvmt-item">'+escH(l)+'</span>').join('');
+}
+
+// ================================================================
 // FILTERS
 // ================================================================
 function buildFilters(){
@@ -991,7 +1005,7 @@ function renderMainTable(){
       '<td style="min-width:160px;max-width:220px" title="'+escH(r.tenct)+'">'+escH(r.tenct||'—')+'</td>'+
       '<td style="white-space:nowrap"><span class="'+htD.cls+'">'+escH(htD.txt)+'</span></td>'+
       '<td style="white-space:nowrap;font-size:11px;color:#444">'+escH(r.linhvuc||'—')+'</td>'+
-      '<td style="white-space:nowrap;font-size:11px;color:#444">'+escH(r.dvmt||'—')+'</td>'+
+      '<td class="dvmt-cell">'+buildDvmtHtml(r.dvmt)+'</td>'+
       '<td><span class="'+ttCls+'">'+escH(r.trangthai)+'</span></td>'+
       '<td><span class="'+gdCls+'">'+r.gd.label+'</span></td>'+
       '<td style="min-width:140px"><span class="'+r.bcTg.cls+'">'+escH(r.bcTg.txt)+'</span></td>'+
@@ -1120,7 +1134,7 @@ function renderWarnTable(){
       '<td style="max-width:180px" title="'+escH(r.tenct)+'">'+escH(r.tenct||'—')+'</td>'+
       '<td><span class="'+htD.cls+'">'+escH(htD.txt)+'</span></td>'+
       '<td style="white-space:nowrap;font-size:11px;color:#444">'+escH(r.linhvuc||'—')+'</td>'+
-      '<td style="white-space:nowrap;font-size:11px;color:#444">'+escH(r.dvmt||'—')+'</td>'+
+      '<td class="dvmt-cell">'+buildDvmtHtml(r.dvmt)+'</td>'+
       '<td><span class="'+gdCls+'">'+r.gd.label+'</span></td>'+
       '<td><div class="tv-bar-wrap"><div class="tv-bar-bg"><div class="tv-bar-fill" style="width:'+pct+'%"></div></div><strong style="color:#e65100">'+r.tvNum+' ngày</strong></div></td>'+
       '<td><span class="sev '+sev.c+'">'+sev.t+'</span></td>'+
