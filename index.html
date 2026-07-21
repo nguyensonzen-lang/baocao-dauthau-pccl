@@ -682,28 +682,38 @@ function htDisplay(ht){
 }
 
 // Lấy TẤT CẢ entries từ cột AC, sắp xếp mới nhất trước
-// Format: "dd/mm/yyyy: nội dung" ngăn cách bởi newline
+// Format: "dd/mm/yyyy: nội dung" – mỗi lần LV 1 dòng (hoặc nhiều dòng nối tiếp)
+// Tách theo DÒNG để tránh split nhầm vào số văn bản trong nội dung (vd: 1918/KHVT)
 function getAllLV(acStr){
   if(!acStr||acStr==='—') return [];
-  const raw=String(acStr);
-  // Tách theo pattern: bắt đầu bằng dd/mm/yyyy
-  const parts=raw.split(/(?=\d{1,2}\/\d{1,2}\/\d{4}[:\s])/g).filter(p=>p.trim());
-  if(!parts.length){
-    // Không có ngày → trả về 1 entry không ngày
-    return [{dateStr:'', dateObj:null, content:raw.trim()}];
-  }
+  // Chuẩn hóa: bỏ \r, tách thành từng dòng
+  const lines=String(acStr).replace(/\r/g,'').split('\n').map(l=>l.trim()).filter(Boolean);
+  if(!lines.length) return [];
+
+  const DATE_RE=/^(\d{1,2})\/(\d{1,2})\/(\d{4})[:\s]+(.*)$/;
   const entries=[];
-  parts.forEach(part=>{
-    const p=part.trim();
-    const m=p.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})[:\s]+(.*)$/s);
+  let cur=null;
+
+  lines.forEach(line=>{
+    const m=line.match(DATE_RE);
     if(m){
+      // Dòng mới bắt đầu bằng ngày → lưu entry cũ, tạo entry mới
+      if(cur) entries.push(cur);
       const d=new Date(+m[3],+m[2]-1,+m[1]);
-      entries.push({dateStr:fmtDate(d), dateObj:d, content:m[4].trim().replace(/\n+/g,' ')});
-    } else if(p){
-      entries.push({dateStr:'', dateObj:null, content:p.replace(/\s+/g,' ')});
+      cur={dateStr:fmtDate(d), dateObj:d, content:m[4].trim()};
+    } else if(cur){
+      // Dòng tiếp nối của entry hiện tại
+      cur.content+=(cur.content?' ':'')+line;
+    } else {
+      // Không có ngày ở đầu → entry độc lập
+      entries.push({dateStr:'', dateObj:null, content:line});
     }
   });
-  // Sắp xếp mới nhất trước (date desc), null date xuống cuối
+  if(cur) entries.push(cur); // Lưu entry cuối
+
+  if(!entries.length) return [{dateStr:'', dateObj:null, content:String(acStr).trim()}];
+
+  // Sắp xếp mới nhất trước, entry không ngày xuống cuối
   entries.sort((a,b)=>{
     if(!a.dateObj&&!b.dateObj) return 0;
     if(!a.dateObj) return 1;
@@ -713,11 +723,10 @@ function getAllLV(acStr){
   return entries;
 }
 
-// Tương thích ngược – lấy entry mới nhất
+// Tương thích ngược
 function getLatestLV(acStr){
   const all=getAllLV(acStr);
-  if(!all.length) return {dateStr:'',content:'—'};
-  return all[0];
+  return all.length?all[0]:{dateStr:'',content:'—'};
 }
 
 function escH(s){
