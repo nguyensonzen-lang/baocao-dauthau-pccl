@@ -123,7 +123,13 @@ tbody td:first-child{text-align:center;color:#aaa;font-size:11px;vertical-align:
 .tv-ok{color:#1a3a6b;font-weight:600}
 .tv-empty{color:#ccc}
 .lv-cell{font-size:11px;color:#444;max-width:260px;word-break:break-word;line-height:1.5}
-.lv-date{color:#1a3a6b;font-size:10px;display:block;margin-bottom:2px;font-weight:600}
+.lv-entry{padding:4px 0 4px 7px;border-left:3px solid #d0d7e2;margin-bottom:5px}
+.lv-entry:last-child{margin-bottom:0}
+.lv-entry.lv-first{border-left-color:#1a3a6b}
+.lv-date{color:#1a3a6b;font-size:10px;display:block;margin-bottom:2px;font-weight:700}
+.lv-content{font-size:11px;color:#333;line-height:1.45}
+.lv-extra{display:none}
+.lv-more-btn{font-size:10px;color:#2980b9;cursor:pointer;background:none;border:none;padding:2px 0 0;text-decoration:underline;display:block;margin-top:2px}
 
 /* WARN TABLE */
 .warn-wrap{background:#fff;border-radius:0 10px 10px 10px;margin:0 20px 20px;box-shadow:0 1px 4px rgba(0,0,0,.08);overflow:hidden;border:1px solid #ffe0b2}
@@ -293,9 +299,12 @@ tbody td:first-child{text-align:center;color:#aaa;font-size:11px;vertical-align:
   /* Badge nhỏ hơn */
   .badge{padding:1px 4px!important;font-size:6.5pt!important;border-radius:8px!important}
   .sev{padding:1px 4px!important;font-size:6.5pt!important}
-  /* LanLV */
-  .lv-cell{font-size:6.5pt!important;max-height:none!important}
+  /* LanLV – khi in chỉ hiện lần gần nhất */
+  .lv-cell{font-size:6.5pt!important}
   .lv-date{font-size:6pt!important}
+  .lv-extra{display:none!important}
+  .lv-more-btn{display:none!important}
+  .lv-entry{padding:2pt 0 2pt 4pt!important;margin-bottom:2pt!important}
   /* Zebra rows */
   tbody tr:nth-child(even){background:#f8f9fb!important}
   .warn-table tbody tr:nth-child(even){background:#fffaf8!important}
@@ -841,16 +850,41 @@ function _processAll(resp){
 }
 
 // ================================================================
-// BUILD LV HTML – chỉ hiển thị lần làm việc GẦN NHẤT
+// BUILD LV HTML – hiện 1 lần đầu, nút xem thêm 2 lần tiếp (tối đa 3)
 // ================================================================
+let _lvIdx=0;
+function buildLvEntry(e, extraClass){
+  if(!e) return '';
+  let h='<div class="lv-entry'+(extraClass?' '+extraClass:'')+'">';
+  if(e.dateStr) h+='<span class="lv-date">'+escH(e.dateStr)+'</span>';
+  h+='<span class="lv-content">'+escH(e.content||'—')+'</span>';
+  h+='</div>';
+  return h;
+}
 function buildLvHtml(lvAll){
   if(!lvAll||!lvAll.length) return '<span style="color:#ccc">—</span>';
-  const e=lvAll[0]; // entry mới nhất (đã sort desc)
-  if(!e||(!e.content&&!e.dateStr)) return '<span style="color:#ccc">—</span>';
+  const top3=lvAll.slice(0,3); // Tối đa 3 lần gần nhất
+  if(!top3[0]) return '<span style="color:#ccc">—</span>';
+  const uid='lv'+(++_lvIdx);
   let html='';
-  if(e.dateStr) html+='<span class="lv-date">'+escH(e.dateStr)+'</span>';
-  html+=escH(e.content||'—');
+  // Lần 1 – luôn hiển thị
+  html+=buildLvEntry(top3[0],'lv-first');
+  // Lần 2 & 3 – ẩn mặc định
+  if(top3.length>1){
+    html+='<div class="lv-extra" id="'+uid+'">';
+    for(let i=1;i<top3.length;i++) html+=buildLvEntry(top3[i]);
+    html+='</div>';
+    const rem=top3.length-1;
+    html+='<button class="lv-more-btn" onclick="toggleLvExtra(\''+uid+'\',this)">▼ Xem thêm '+rem+' lần</button>';
+  }
   return html;
+}
+function toggleLvExtra(uid,btn){
+  const el=document.getElementById(uid);
+  if(!el) return;
+  const open=el.style.display==='block';
+  el.style.display=open?'none':'block';
+  btn.textContent=open?'▼ Xem thêm':'▲ Thu gọn';
 }
 
 // ================================================================
