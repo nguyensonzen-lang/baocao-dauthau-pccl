@@ -78,6 +78,12 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;font-
 .filter-bar input[type=text]:focus{border-color:#1a3a6b;background:#fff}
 .btn-reset{background:#e8edf5;border:none;border-radius:6px;padding:5px 12px;font-size:12px;color:#1a3a6b;cursor:pointer;font-weight:600}
 .btn-refresh{background:#1a3a6b;border:none;border-radius:6px;padding:5px 13px;font-size:12px;color:#fff;cursor:pointer;font-weight:600;display:flex;align-items:center;gap:5px}
+
+/* STICKY HORIZONTAL SCROLLBAR */
+#h-scroll-bar{position:fixed;bottom:0;left:0;right:0;height:16px;overflow-x:auto;overflow-y:hidden;z-index:600;background:#dde3ee;border-top:2px solid #1a3a6b;box-shadow:0 -2px 6px rgba(0,0,0,.15);display:none}
+#h-scroll-bar-inner{height:1px;min-width:100%}
+@media(max-width:768px){#h-scroll-bar{bottom:56px}}
+@media print{#h-scroll-bar{display:none!important}}
 .btn-refresh:disabled{opacity:.6;cursor:wait}
 .btn-refresh .spin-ico{display:inline-block}
 .btn-refresh.loading .spin-ico{animation:spin .7s linear infinite}
@@ -850,6 +856,9 @@ function _processAll(resp){
     // Reset nút refresh
     _setRefreshBtn(false);
 
+    // Khởi động scroll bar sticky
+    setTimeout(initScrollBar, 100);
+
     // Khởi động auto-refresh 5 phút
     clearInterval(_autoTimer);
     _autoTimer=setInterval(()=>{ loadData(); }, AUTO_REFRESH_MS);
@@ -991,6 +1000,8 @@ function renderMainTable(){
       '<td class="lv-cell">'+lvHtml+'</td>';
     tb.appendChild(tr);
   });
+  // Cập nhật sticky scroll bar sau khi render xong
+  setTimeout(updateScrollBar, 50);
 }
 
 // ================================================================
@@ -1131,6 +1142,10 @@ function switchTab(name){
   // sync mobile nav
   document.getElementById('mnb-main')?.classList.toggle('active',name==='main');
   document.getElementById('mnb-warn')?.classList.toggle('active',name==='warn');
+  // Cập nhật sticky scroll bar sang bảng đang xem
+  const tabId = name==='warn' ? 'tab-warn' : 'tab-main';
+  const wrap = document.querySelector('#'+tabId+' .table-wrap');
+  if(wrap) setTimeout(()=>setScrollTarget(wrap), 80);
 }
 
 // ================================================================
@@ -1165,6 +1180,64 @@ function _syncMobBadge(cnt){
 }
 
 window.addEventListener('load',loadData);
+
+// ================================================================
+// STICKY HORIZONTAL SCROLL BAR
+// ================================================================
+let _mirrorTarget=null, _mirrorSync=false;
+
+function _onMirrorScroll(){
+  if(_mirrorSync||!_mirrorTarget) return;
+  _mirrorSync=true;
+  _mirrorTarget.scrollLeft=document.getElementById('h-scroll-bar').scrollLeft;
+  requestAnimationFrame(()=>{_mirrorSync=false;});
+}
+function _onTableScroll(){
+  if(_mirrorSync) return;
+  const bar=document.getElementById('h-scroll-bar');
+  if(!bar) return;
+  _mirrorSync=true;
+  bar.scrollLeft=_mirrorTarget.scrollLeft;
+  requestAnimationFrame(()=>{_mirrorSync=false;});
+}
+
+function setScrollTarget(tableWrap){
+  const bar=document.getElementById('h-scroll-bar');
+  const inner=document.getElementById('h-scroll-bar-inner');
+  if(!bar||!inner||!tableWrap) return;
+
+  // Gỡ listener cũ
+  if(_mirrorTarget) _mirrorTarget.removeEventListener('scroll',_onTableScroll);
+
+  _mirrorTarget=tableWrap;
+  _mirrorTarget.addEventListener('scroll',_onTableScroll);
+  bar.removeEventListener('scroll',_onMirrorScroll);
+  bar.addEventListener('scroll',_onMirrorScroll);
+
+  updateScrollBar();
+}
+
+function updateScrollBar(){
+  const bar=document.getElementById('h-scroll-bar');
+  const inner=document.getElementById('h-scroll-bar-inner');
+  if(!bar||!inner||!_mirrorTarget) return;
+  const sw=_mirrorTarget.scrollWidth;
+  const cw=_mirrorTarget.clientWidth;
+  inner.style.width=sw+'px';
+  bar.style.display=(sw>cw+4)?'block':'none';
+  bar.scrollLeft=_mirrorTarget.scrollLeft;
+}
+
+function initScrollBar(){
+  // Gắn vào bảng Tab 1 mặc định
+  const wrap=document.querySelector('#tab-main .table-wrap');
+  if(wrap) setScrollTarget(wrap);
+  window.addEventListener('resize',updateScrollBar);
+}
 </script>
+
+<!-- Sticky horizontal scroll bar -->
+<div id="h-scroll-bar"><div id="h-scroll-bar-inner"></div></div>
+
 </body>
 </html>
