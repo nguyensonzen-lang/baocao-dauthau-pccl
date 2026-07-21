@@ -123,13 +123,7 @@ tbody td:first-child{text-align:center;color:#aaa;font-size:11px;vertical-align:
 .tv-ok{color:#1a3a6b;font-weight:600}
 .tv-empty{color:#ccc}
 .lv-cell{font-size:11px;color:#444;max-width:260px;word-break:break-word;line-height:1.5}
-.lv-entry{border-left:2px solid #d0d7e2;padding-left:6px;margin-bottom:5px}
-.lv-entry:last-child{margin-bottom:0}
-.lv-entry.lv-latest{border-left-color:#1a3a6b}
-.lv-date{color:#888;font-size:10px;display:block;margin-bottom:2px;font-weight:600}
-.lv-entry.lv-latest .lv-date{color:#1a3a6b}
-.lv-more-btn{font-size:10px;color:#2980b9;cursor:pointer;background:none;border:none;padding:0;margin-top:3px;text-decoration:underline}
-.lv-hidden{display:none}
+.lv-date{color:#1a3a6b;font-size:10px;display:block;margin-bottom:2px;font-weight:600}
 
 /* WARN TABLE */
 .warn-wrap{background:#fff;border-radius:0 10px 10px 10px;margin:0 20px 20px;box-shadow:0 1px 4px rgba(0,0,0,.08);overflow:hidden;border:1px solid #ffe0b2}
@@ -299,12 +293,9 @@ tbody td:first-child{text-align:center;color:#aaa;font-size:11px;vertical-align:
   /* Badge nhỏ hơn */
   .badge{padding:1px 4px!important;font-size:6.5pt!important;border-radius:8px!important}
   .sev{padding:1px 4px!important;font-size:6.5pt!important}
-  /* LanLV – in tất cả entries */
+  /* LanLV */
   .lv-cell{font-size:6.5pt!important;max-height:none!important}
   .lv-date{font-size:6pt!important}
-  .lv-hidden{display:block!important}
-  .lv-more-btn{display:none!important}
-  .lv-entry{margin-bottom:3pt!important;padding-left:4pt!important}
   /* Zebra rows */
   tbody tr:nth-child(even){background:#f8f9fb!important}
   .warn-table tbody tr:nth-child(even){background:#fffaf8!important}
@@ -508,7 +499,7 @@ tbody td:first-child{text-align:center;color:#aaa;font-size:11px;vertical-align:
               <th>BC TG / Đóng thầu</th>
               <th>Trung vị</th>
               <th>Ngày mở thầu DK</th>
-              <th>Các lần làm việc (AC)</th>
+              <th>Lần LV gần nhất (AC)</th>
             </tr>
           </thead>
           <tbody id="main-tbody"></tbody>
@@ -539,7 +530,7 @@ tbody td:first-child{text-align:center;color:#aaa;font-size:11px;vertical-align:
               <th>Trung vị</th>
               <th>Mức độ</th>
               <th>BC TG / Đóng thầu</th>
-              <th>Các lần làm việc (AC)</th>
+              <th>Lần LV gần nhất (AC)</th>
             </tr>
           </thead>
           <tbody id="warn-tbody"></tbody>
@@ -850,39 +841,16 @@ function _processAll(resp){
 }
 
 // ================================================================
-// BUILD LV HTML (dùng chung cho main table & warn table)
-// Hiển thị tất cả lần làm việc từ lvAll, mới nhất lên đầu
+// BUILD LV HTML – chỉ hiển thị lần làm việc GẦN NHẤT
 // ================================================================
-let _lvIdx=0;
 function buildLvHtml(lvAll){
   if(!lvAll||!lvAll.length) return '<span style="color:#ccc">—</span>';
-  const id='lv-x-'+(++_lvIdx);
-  const SHOW=2; // Mặc định hiện 2 entry đầu, còn lại ẩn
+  const e=lvAll[0]; // entry mới nhất (đã sort desc)
+  if(!e||(!e.content&&!e.dateStr)) return '<span style="color:#ccc">—</span>';
   let html='';
-  lvAll.forEach((e,i)=>{
-    const isLatest=(i===0);
-    const hiddenCls=(i>=SHOW)?'lv-hidden':'';
-    html+='<div class="lv-entry'+(isLatest?' lv-latest':'')+' '+hiddenCls+'" data-id="'+id+'">';
-    if(e.dateStr) html+='<span class="lv-date">'+escH(e.dateStr)+'</span>';
-    html+=escH(e.content||'—');
-    html+='</div>';
-  });
-  if(lvAll.length>SHOW){
-    html+='<button class="lv-more-btn" id="btn-'+id+'" onclick="toggleLv(\''+id+'\',this)">▼ Xem thêm '+(lvAll.length-SHOW)+' lần</button>';
-  }
+  if(e.dateStr) html+='<span class="lv-date">'+escH(e.dateStr)+'</span>';
+  html+=escH(e.content||'—');
   return html;
-}
-function toggleLv(id,btn){
-  const hidden=document.querySelectorAll('.lv-hidden[data-id="'+id+'"]');
-  if(hidden.length){
-    hidden.forEach(el=>el.classList.remove('lv-hidden'));
-    btn.textContent='▲ Thu gọn';
-  } else {
-    const all=document.querySelectorAll('.lv-entry[data-id="'+id+'"]');
-    let hide=false;
-    all.forEach((el,i)=>{if(i>=2){el.classList.add('lv-hidden');hide=true;}});
-    if(hide) btn.textContent='▼ Xem thêm';
-  }
 }
 
 // ================================================================
