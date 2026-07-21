@@ -122,8 +122,14 @@ tbody td:first-child{text-align:center;color:#aaa;font-size:11px;vertical-align:
 .tv-warn{color:#e65100;font-weight:700}
 .tv-ok{color:#1a3a6b;font-weight:600}
 .tv-empty{color:#ccc}
-.lv-cell{font-size:11px;color:#444;max-width:240px;word-break:break-word;line-height:1.5}
-.lv-date{color:#888;font-size:10px;display:block;margin-bottom:2px}
+.lv-cell{font-size:11px;color:#444;max-width:260px;word-break:break-word;line-height:1.5}
+.lv-entry{border-left:2px solid #d0d7e2;padding-left:6px;margin-bottom:5px}
+.lv-entry:last-child{margin-bottom:0}
+.lv-entry.lv-latest{border-left-color:#1a3a6b}
+.lv-date{color:#888;font-size:10px;display:block;margin-bottom:2px;font-weight:600}
+.lv-entry.lv-latest .lv-date{color:#1a3a6b}
+.lv-more-btn{font-size:10px;color:#2980b9;cursor:pointer;background:none;border:none;padding:0;margin-top:3px;text-decoration:underline}
+.lv-hidden{display:none}
 
 /* WARN TABLE */
 .warn-wrap{background:#fff;border-radius:0 10px 10px 10px;margin:0 20px 20px;box-shadow:0 1px 4px rgba(0,0,0,.08);overflow:hidden;border:1px solid #ffe0b2}
@@ -293,9 +299,12 @@ tbody td:first-child{text-align:center;color:#aaa;font-size:11px;vertical-align:
   /* Badge nhỏ hơn */
   .badge{padding:1px 4px!important;font-size:6.5pt!important;border-radius:8px!important}
   .sev{padding:1px 4px!important;font-size:6.5pt!important}
-  /* LanLV giới hạn chiều cao */
-  .lv-cell{font-size:7pt!important;max-height:none!important}
-  .lv-date{font-size:6.5pt!important}
+  /* LanLV – in tất cả entries */
+  .lv-cell{font-size:6.5pt!important;max-height:none!important}
+  .lv-date{font-size:6pt!important}
+  .lv-hidden{display:block!important}
+  .lv-more-btn{display:none!important}
+  .lv-entry{margin-bottom:3pt!important;padding-left:4pt!important}
   /* Zebra rows */
   tbody tr:nth-child(even){background:#f8f9fb!important}
   .warn-table tbody tr:nth-child(even){background:#fffaf8!important}
@@ -499,7 +508,7 @@ tbody td:first-child{text-align:center;color:#aaa;font-size:11px;vertical-align:
               <th>BC TG / Đóng thầu</th>
               <th>Trung vị</th>
               <th>Ngày mở thầu DK</th>
-              <th>Lần LV gần nhất</th>
+              <th>Các lần làm việc (AC)</th>
             </tr>
           </thead>
           <tbody id="main-tbody"></tbody>
@@ -530,7 +539,7 @@ tbody td:first-child{text-align:center;color:#aaa;font-size:11px;vertical-align:
               <th>Trung vị</th>
               <th>Mức độ</th>
               <th>BC TG / Đóng thầu</th>
-              <th>Lần LV gần nhất</th>
+              <th>Các lần làm việc (AC)</th>
             </tr>
           </thead>
           <tbody id="warn-tbody"></tbody>
@@ -672,36 +681,43 @@ function htDisplay(ht){
   return {txt:ht,cls:'ht-tu'};
 }
 
-// Lấy entry gần nhất từ cột AC (nhiều entries, mỗi entry có ngày)
-// Format: "dd/mm/yyyy: nội dung" ngăn cách bởi newline hoặc dấu phẩy đặc biệt
-function getLatestLV(acStr){
-  if(!acStr||acStr==='—') return {dateStr:'',content:'—'};
-  // Split entries: newline, \r\n, hoặc pattern "dd/mm/yyyy:" ở đầu entry mới
+// Lấy TẤT CẢ entries từ cột AC, sắp xếp mới nhất trước
+// Format: "dd/mm/yyyy: nội dung" ngăn cách bởi newline
+function getAllLV(acStr){
+  if(!acStr||acStr==='—') return [];
   const raw=String(acStr);
   // Tách theo pattern: bắt đầu bằng dd/mm/yyyy
   const parts=raw.split(/(?=\d{1,2}\/\d{1,2}\/\d{4}[:\s])/g).filter(p=>p.trim());
-  if(!parts.length) return {dateStr:'',content:raw.trim()};
-
-  let latestDate=null, latestContent='', latestDateStr='';
+  if(!parts.length){
+    // Không có ngày → trả về 1 entry không ngày
+    return [{dateStr:'', dateObj:null, content:raw.trim()}];
+  }
+  const entries=[];
   parts.forEach(part=>{
     const p=part.trim();
     const m=p.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})[:\s]+(.*)$/s);
     if(m){
       const d=new Date(+m[3],+m[2]-1,+m[1]);
-      const content=m[4].trim().replace(/\s+/g,' ');
-      if(!latestDate||d>=latestDate){
-        latestDate=d;
-        latestDateStr=fmtDate(d);
-        latestContent=content;
-      }
-    } else {
-      // Không có ngày → hiển thị nguyên
-      if(!latestDate){
-        latestContent=p.replace(/\s+/g,' ');
-      }
+      entries.push({dateStr:fmtDate(d), dateObj:d, content:m[4].trim().replace(/\n+/g,' ')});
+    } else if(p){
+      entries.push({dateStr:'', dateObj:null, content:p.replace(/\s+/g,' ')});
     }
   });
-  return {dateStr:latestDateStr, content:latestContent||raw.trim()};
+  // Sắp xếp mới nhất trước (date desc), null date xuống cuối
+  entries.sort((a,b)=>{
+    if(!a.dateObj&&!b.dateObj) return 0;
+    if(!a.dateObj) return 1;
+    if(!b.dateObj) return -1;
+    return b.dateObj-a.dateObj;
+  });
+  return entries;
+}
+
+// Tương thích ngược – lấy entry mới nhất
+function getLatestLV(acStr){
+  const all=getAllLV(acStr);
+  if(!all.length) return {dateStr:'',content:'—'};
+  return all[0];
 }
 
 function escH(s){
@@ -796,7 +812,8 @@ function _processAll(resp){
       const bcTg    =computeBcTg(gd.code,ngayPH,ngayDong);
       const dN      =parseGvizDate(ngayDong);
       const lvRaw   =getStr(c[CI.LANLV]).trim();
-      const lv      =getLatestLV(lvRaw);
+      const lvAll   =getAllLV(lvRaw);
+      const lv      =lvAll.length?lvAll[0]:{dateStr:'',content:'—'};
 
       allData.push({
         mact    :getStr(c[CI.MACT]).trim()||'---',
@@ -804,7 +821,7 @@ function _processAll(resp){
         tenct   :getStr(c[CI.TEN]).trim(),
         linhvuc :getStr(c[CI.LINHVUC]).trim(),
         dvmt    :getStr(c[CI.DVMT]).trim(),
-        trangthai:aa, ht, gd, bcTg, tvNum, tvCell, lv,
+        trangthai:aa, ht, gd, bcTg, tvNum, tvCell, lv, lvAll,
         ngayDStr:dN?fmtDate(dN):'—'
       });
     });
@@ -830,6 +847,42 @@ function _processAll(resp){
     startCountdown();
 
   }catch(e){showErr('Lỗi xử lý: '+e.message);}
+}
+
+// ================================================================
+// BUILD LV HTML (dùng chung cho main table & warn table)
+// Hiển thị tất cả lần làm việc từ lvAll, mới nhất lên đầu
+// ================================================================
+let _lvIdx=0;
+function buildLvHtml(lvAll){
+  if(!lvAll||!lvAll.length) return '<span style="color:#ccc">—</span>';
+  const id='lv-x-'+(++_lvIdx);
+  const SHOW=2; // Mặc định hiện 2 entry đầu, còn lại ẩn
+  let html='';
+  lvAll.forEach((e,i)=>{
+    const isLatest=(i===0);
+    const hiddenCls=(i>=SHOW)?'lv-hidden':'';
+    html+='<div class="lv-entry'+(isLatest?' lv-latest':'')+' '+hiddenCls+'" data-id="'+id+'">';
+    if(e.dateStr) html+='<span class="lv-date">'+escH(e.dateStr)+'</span>';
+    html+=escH(e.content||'—');
+    html+='</div>';
+  });
+  if(lvAll.length>SHOW){
+    html+='<button class="lv-more-btn" id="btn-'+id+'" onclick="toggleLv(\''+id+'\',this)">▼ Xem thêm '+(lvAll.length-SHOW)+' lần</button>';
+  }
+  return html;
+}
+function toggleLv(id,btn){
+  const hidden=document.querySelectorAll('.lv-hidden[data-id="'+id+'"]');
+  if(hidden.length){
+    hidden.forEach(el=>el.classList.remove('lv-hidden'));
+    btn.textContent='▲ Thu gọn';
+  } else {
+    const all=document.querySelectorAll('.lv-entry[data-id="'+id+'"]');
+    let hide=false;
+    all.forEach((el,i)=>{if(i>=2){el.classList.add('lv-hidden');hide=true;}});
+    if(hide) btn.textContent='▼ Xem thêm';
+  }
 }
 
 // ================================================================
@@ -907,13 +960,7 @@ function renderMainTable(){
     const htD=htDisplay(r.ht);
     const isTu=(r.gd.code==='tu');
 
-    // LV cell
-    let lvHtml;
-    if(r.lv.content&&r.lv.content!=='—'){
-      lvHtml=(r.lv.dateStr?'<span class="lv-date">'+escH(r.lv.dateStr)+'</span>':'')+escH(r.lv.content);
-    } else {
-      lvHtml='<span style="color:#ccc">—</span>';
-    }
+    const lvHtml=buildLvHtml(r.lvAll);
 
     const tr=document.createElement('tr');
     if(isTu) tr.className='row-tu';
@@ -1041,12 +1088,7 @@ function renderWarnTable(){
     else gdCls='badge b-g3';
     const htD=htDisplay(r.ht);
 
-    let lvHtml;
-    if(r.lv.content&&r.lv.content!=='—'){
-      lvHtml=(r.lv.dateStr?'<span class="lv-date">'+escH(r.lv.dateStr)+'</span>':'')+escH(r.lv.content);
-    } else {
-      lvHtml='<span style="color:#ccc">—</span>';
-    }
+    const lvHtml=buildLvHtml(r.lvAll);
 
     const tr=document.createElement('tr');
     tr.innerHTML=
