@@ -737,6 +737,16 @@ function getAllLV(acStr){
   return entries;
 }
 
+// Format Khái toán / Giá gói thầu – chuẩn VN: 1.250,50
+// Nhận giá trị thô từ gviz (thường là chuỗi số JS, vd "1250.5")
+// Trả về "—" nếu trống hoặc bằng 0
+function fmtKhaiToan(raw){
+  if(!raw||raw==='—') return '—';
+  const n=parseFloat(String(raw).replace(/,/g,''));
+  if(isNaN(n)||n===0) return '—';
+  return n.toLocaleString('vi-VN',{minimumFractionDigits:2,maximumFractionDigits:2});
+}
+
 // Tương thích ngược
 function getLatestLV(acStr){
   const all=getAllLV(acStr);
@@ -1011,7 +1021,7 @@ function renderMainTable(){
       '<td style="min-width:160px;max-width:220px" title="'+escH(r.tenct)+'">'+escH(r.tenct||'—')+'</td>'+
       '<td style="white-space:nowrap"><span class="'+htD.cls+'">'+escH(htD.txt)+'</span></td>'+
       '<td style="white-space:nowrap;font-size:11px;color:#444">'+escH(r.linhvuc||'—')+'</td>'+
-      '<td style="white-space:nowrap;font-size:11px;color:#555;text-align:right;min-width:80px">'+(r.khaitoan?escH(r.khaitoan):'<span style="color:#ccc">—</span>')+'</td>'+
+      '<td style="white-space:nowrap;font-size:11px;color:#555;text-align:right;min-width:80px">'+(function(){const f=fmtKhaiToan(r.khaitoan);return f==='—'?'<span style="color:#ccc">—</span>':escH(f);})()+'</td>'+
       '<td class="dvmt-cell">'+buildDvmtHtml(r.dvmt)+'</td>'+
       '<td><span class="'+ttCls+'">'+escH(r.trangthai)+'</span></td>'+
       '<td><span class="'+gdCls+'">'+r.gd.label+'</span></td>'+
@@ -1141,7 +1151,7 @@ function renderWarnTable(){
       '<td style="max-width:180px" title="'+escH(r.tenct)+'">'+escH(r.tenct||'—')+'</td>'+
       '<td><span class="'+htD.cls+'">'+escH(htD.txt)+'</span></td>'+
       '<td style="white-space:nowrap;font-size:11px;color:#444">'+escH(r.linhvuc||'—')+'</td>'+
-      '<td style="white-space:nowrap;font-size:11px;color:#555;text-align:right;min-width:80px">'+(r.khaitoan?escH(r.khaitoan):'<span style="color:#ccc">—</span>')+'</td>'+
+      '<td style="white-space:nowrap;font-size:11px;color:#555;text-align:right;min-width:80px">'+(function(){const f=fmtKhaiToan(r.khaitoan);return f==='—'?'<span style="color:#ccc">—</span>':escH(f);})()+'</td>'+
       '<td class="dvmt-cell">'+buildDvmtHtml(r.dvmt)+'</td>'+
       '<td><span class="'+gdCls+'">'+r.gd.label+'</span></td>'+
       '<td><div class="tv-bar-wrap"><div class="tv-bar-bg"><div class="tv-bar-fill" style="width:'+pct+'%"></div></div><strong style="color:#e65100">'+r.tvNum+' ngày</strong></div></td>'+
