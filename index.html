@@ -128,6 +128,10 @@ tbody td:first-child{text-align:center;color:#aaa;font-size:11px;vertical-align:
 .tv-warn{color:#e65100;font-weight:700}
 .tv-ok{color:#1a3a6b;font-weight:600}
 .tv-empty{color:#ccc}
+.days-ok{color:#27ae60;font-weight:700}
+.days-warn{color:#e67e22;font-weight:700}
+.days-urgent{color:#c0392b;font-weight:700;animation:pulse-urgent .8s infinite alternate}
+@keyframes pulse-urgent{from{opacity:1}to{opacity:.6}}
 .lv-cell{font-size:11px;color:#444;max-width:260px;word-break:break-word;line-height:1.5}
 .dvmt-cell{font-size:11px;color:#444;min-width:120px;max-width:180px}
 .dvmt-item{display:block;padding:1px 0;border-bottom:1px dashed #e8ecf2;line-height:1.4}
@@ -139,6 +143,18 @@ tbody td:first-child{text-align:center;color:#aaa;font-size:11px;vertical-align:
 .lv-content{font-size:11px;color:#333;line-height:1.45}
 .lv-extra{display:none}
 .lv-more-btn{font-size:10px;color:#2980b9;cursor:pointer;background:none;border:none;padding:2px 0 0;text-decoration:underline;display:block;margin-top:2px}
+
+/* G2 TABLE */
+.g2-wrap{background:#fff;border-radius:0 10px 10px 10px;margin:0 20px 20px;box-shadow:0 1px 4px rgba(0,0,0,.08);overflow:hidden;border:1px solid #b2dfdb}
+.g2-header-row{background:#e0f2f1;padding:12px 18px;display:flex;align-items:center;gap:8px;border-bottom:2px solid #b2dfdb}
+.g2-header-row .gh-title{font-size:13px;font-weight:700;color:#00695c}
+.g2-header-row .gh-sub{font-size:11px;color:#004d40;margin-left:4px}
+.g2-table{width:100%;border-collapse:collapse;min-width:1100px}
+.g2-table thead tr{background:#00796b;color:#fff}
+.g2-table thead th{padding:9px 10px;font-size:11px;font-weight:600;text-align:left;white-space:nowrap}
+.g2-table tbody tr{border-bottom:1px solid #e0f2f1;transition:background .1s}
+.g2-table tbody tr:hover{background:#f0faf9}
+.g2-table tbody td{padding:8px 10px;font-size:12px;vertical-align:top;line-height:1.45}
 
 /* WARN TABLE */
 .warn-wrap{background:#fff;border-radius:0 10px 10px 10px;margin:0 20px 20px;box-shadow:0 1px 4px rgba(0,0,0,.08);overflow:hidden;border:1px solid #ffe0b2}
@@ -342,8 +358,16 @@ tbody td:first-child{text-align:center;color:#aaa;font-size:11px;vertical-align:
   .tv-bar-wrap{flex-direction:column!important;gap:2px!important}
   .tv-bar-bg{display:none!important}
 
-  /* HIỆN CẢ 2 TAB KHI IN */
+  /* HIỆN CẢ 3 TAB KHI IN */
   .tab-panel{display:block!important}
+  /* G2 TABLE – trang mới */
+  .tab-panel#tab-g2{page-break-before:always!important;margin-top:4mm!important}
+  .tab-panel#tab-g2::before{
+    content:"📅  ĐÃ PH HSMT – CHƯA ĐÓNG THẦU";
+    display:block!important;font-size:10pt!important;font-weight:700;color:#00695c;
+    padding:5px 10px;margin:0 8px 5px;border-left:4px solid #00796b;
+    background:#e0f2f1;border-radius:2px
+  }
   /* Sang trang mới trước bảng cảnh báo */
   .tab-panel#tab-warn{page-break-before:always!important;margin-top:4mm!important}
   .tab-panel#tab-warn::before{
@@ -352,6 +376,29 @@ tbody td:first-child{text-align:center;color:#aaa;font-size:11px;vertical-align:
     padding:5px 10px;margin:0 8px 5px;border-left:4px solid #e65100;
     background:#fff3e0;border-radius:2px
   }
+  /* G2 TABLE print widths (14 cột) */
+  .g2-wrap{margin:0 8px 6px!important;box-shadow:none!important;border:1px solid #b2dfdb!important;border-radius:4px!important;overflow:visible!important}
+  .g2-header-row{padding:6px 10px!important}
+  .gh-title{font-size:9pt!important}
+  .g2-table{width:100%!important;min-width:unset!important;table-layout:fixed!important;border-collapse:collapse!important;font-size:7.5pt!important}
+  .g2-table thead tr th:nth-child(1){width:5mm!important}
+  .g2-table thead tr th:nth-child(2){width:18mm!important}
+  .g2-table thead tr th:nth-child(3){width:14mm!important}
+  .g2-table thead tr th:nth-child(4){width:28mm!important}
+  .g2-table thead tr th:nth-child(5){width:14mm!important}
+  .g2-table thead tr th:nth-child(6){width:12mm!important}
+  .g2-table thead tr th:nth-child(7){width:14mm!important}
+  .g2-table thead tr th:nth-child(8){width:16mm!important}
+  .g2-table thead tr th:nth-child(9){width:14mm!important}
+  .g2-table thead tr th:nth-child(10){width:14mm!important}
+  .g2-table thead tr th:nth-child(11){width:14mm!important}
+  .g2-table thead tr th:nth-child(12){width:12mm!important}
+  .g2-table thead tr th:nth-child(13){width:10mm!important}
+  .g2-table thead tr th:nth-child(14){width:26mm!important}
+  .g2-table thead th{padding:4px 3px!important;font-size:7.5pt!important;white-space:normal!important;background:#00796b!important;color:#fff!important}
+  .g2-table tbody td{padding:4px 3px!important;font-size:7.5pt!important;white-space:normal!important;word-break:break-word!important;vertical-align:top!important}
+  .g2-table tbody tr:nth-child(even){background:#f0faf9!important}
+  .table-scroll{overflow:visible!important}
   /* Không cắt row giữa trang */
   tbody tr{page-break-inside:avoid}
   .filter-count{display:flex!important}
@@ -461,6 +508,7 @@ tbody td:first-child{text-align:center;color:#aaa;font-size:11px;vertical-align:
   <!-- TABS -->
   <div class="tabs-row">
     <button class="tab-btn active" onclick="switchTab('main')">📋 Danh sách gói thầu</button>
+    <button class="tab-btn" onclick="switchTab('g2')">📅 Đã PH – Chưa đóng &nbsp;<span id="tab-g2-cnt" style="background:#00796b;color:#fff;border-radius:10px;padding:1px 7px;font-size:10px">0</span></button>
     <button class="tab-btn" onclick="switchTab('warn')">⚠ Cảnh báo Trung vị &gt;20 ngày &nbsp;<span id="tab-warn-cnt" style="background:#e65100;color:#fff;border-radius:10px;padding:1px 7px;font-size:10px">0</span></button>
   </div>
 
@@ -561,6 +609,39 @@ tbody td:first-child{text-align:center;color:#aaa;font-size:11px;vertical-align:
     </div>
   </div>
 
+  <!-- TAB 3 – G2 -->
+  <div id="tab-g2" class="tab-panel">
+    <div class="g2-wrap">
+      <div class="g2-header-row">
+        <span class="gh-title">📅 Đã PH HSMT – Chưa đóng thầu</span>
+        <span class="gh-sub" id="g2-sub"></span>
+      </div>
+      <div class="table-scroll">
+        <table class="g2-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Mã CT</th>
+              <th>Người PT</th>
+              <th>Tên công trình</th>
+              <th>Hình thức</th>
+              <th>Lĩnh vực</th>
+              <th>Giá GT (tr.đ)</th>
+              <th>Đơn vị MT</th>
+              <th>Ngày PH HSMT</th>
+              <th>Ngày đóng thầu</th>
+              <th>Số ngày còn lại</th>
+              <th>Trạng thái</th>
+              <th>Trung vị</th>
+              <th>Lần LV gần nhất (AC)</th>
+            </tr>
+          </thead>
+          <tbody id="g2-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
   <div class="footer">Dữ liệu cập nhật tự động mỗi khi mở file &nbsp;|&nbsp; PCCL – Phòng KHVT</div>
 </div>
 
@@ -569,6 +650,10 @@ tbody td:first-child{text-align:center;color:#aaa;font-size:11px;vertical-align:
   <button class="mob-nav-btn active" id="mnb-main" onclick="mobNav('main')">
     <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
     Danh sách
+  </button>
+  <button class="mob-nav-btn" id="mnb-g2" onclick="mobNav('g2')">
+    <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    Đã PH <span id="mob-g2-cnt" style="background:#00796b;color:#fff;border-radius:8px;padding:0 5px;font-size:9px;margin-left:2px">0</span>
   </button>
   <button class="mob-nav-btn" id="mnb-warn" onclick="mobNav('warn')">
     <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
@@ -847,6 +932,8 @@ function _processAll(resp){
       const lvRaw   =getStr(c[CI.LANLV]).trim();
       const lvAll   =getAllLV(lvRaw);
       const lv      =lvAll.length?lvAll[0]:{dateStr:'',content:'—'};
+      const dPH     =parseGvizDate(ngayPH);
+      const daysLeft=dN?daysDiff(BC_DATE,dN):null;
 
       allData.push({
         mact    :getStr(c[CI.MACT]).trim()||'---',
@@ -856,11 +943,13 @@ function _processAll(resp){
         khaitoan:getStr(c[CI.KHAITOAN]).trim(),
         dvmt    :getStr(c[CI.DVMT]).trim(),
         trangthai:aa, ht, gd, bcTg, tvNum, tvCell, lv, lvAll,
-        ngayDStr:dN?fmtDate(dN):'—'
+        ngayDStr:dN?fmtDate(dN):'—',
+        ngayPHStr:dPH?fmtDate(dPH):'—',
+        daysLeft, dN
       });
     });
 
-    buildFilters(); applyFilters(); updateKPI(); updateDist(); renderWarnTable();
+    buildFilters(); applyFilters(); updateKPI(); updateDist(); renderWarnTable(); renderG2Table();
     document.getElementById('loading').style.display='none';
     document.getElementById('main').style.display='block';
 
@@ -1055,6 +1144,11 @@ function updateKPI(){
   document.getElementById('kpi-g1').textContent     =g1Cnt;
   document.getElementById('kpi-tvwarn').textContent =tvW;
   document.getElementById('tab-warn-cnt').textContent=tvW;
+  const g2Cnt2=allData.filter(r=>!isHTU(r.ht)&&r.gd.code==='g2').length;
+  const tg2=document.getElementById('tab-g2-cnt');
+  if(tg2) tg2.textContent=g2Cnt2;
+  const mg2=document.getElementById('mob-g2-cnt');
+  if(mg2) mg2.textContent=g2Cnt2;
   _syncMobBadge(tvW);
 
   const tuQH=allData.filter(r=>isHTU(r.ht)&&r.trangthai==='Quá hạn').length;
@@ -1163,20 +1257,83 @@ function renderWarnTable(){
 }
 
 // ================================================================
+// RENDER G2 TABLE – Đã PH HSMT – Chưa đóng thầu
+// ================================================================
+function daysLeftDisplay(days){
+  if(days===null) return {txt:'—',cls:'tv-empty'};
+  if(days<=0)  return {txt:'Đã đóng'+(-days===0?'':' '+(-days)+' ngày trước'),cls:'days-urgent'};
+  if(days<=3)  return {txt:days+' ngày ⚡',cls:'days-urgent'};
+  if(days<=7)  return {txt:days+' ngày',cls:'days-warn'};
+  return {txt:days+' ngày',cls:'days-ok'};
+}
+
+function renderG2Table(){
+  const list=allData
+    .filter(r=>r.gd.code==='g2')
+    .sort((a,b)=>{
+      if(!a.dN&&!b.dN) return 0;
+      if(!a.dN) return 1;
+      if(!b.dN) return -1;
+      return a.dN-b.dN; // gần nhất lên đầu
+    });
+
+  const subEl=document.getElementById('g2-sub');
+  if(subEl) subEl.textContent='— '+list.length+' gói thầu đang trong giai đoạn mở thầu';
+
+  const tb=document.getElementById('g2-tbody');
+  tb.innerHTML='';
+  if(!list.length){
+    tb.innerHTML='<tr><td colspan="14" style="text-align:center;padding:28px;color:#999">Không có gói thầu nào trong giai đoạn Đã PH HSMT – Chưa đóng</td></tr>';
+    return;
+  }
+
+  list.forEach((r,i)=>{
+    const ttCls=r.trangthai==='Quá hạn'?'badge b-qh':'badge b-dxl';
+    const tvD=tvDisplay(r.tvNum);
+    const htD=htDisplay(r.ht);
+    const dlD=daysLeftDisplay(r.daysLeft);
+    const lvHtml=buildLvHtml(r.lvAll);
+
+    const tr=document.createElement('tr');
+    tr.innerHTML=
+      '<td style="text-align:center;color:#aaa;font-size:11px">'+(i+1)+'</td>'+
+      '<td style="font-size:11px;color:#555;word-break:break-all;min-width:110px" title="'+escH(r.mact)+'">'+escH(r.mact)+'</td>'+
+      '<td style="white-space:nowrap;min-width:90px">'+escH(r.nguoipt||'—')+'</td>'+
+      '<td style="min-width:160px;max-width:220px" title="'+escH(r.tenct)+'">'+escH(r.tenct||'—')+'</td>'+
+      '<td style="white-space:nowrap"><span class="'+htD.cls+'">'+escH(htD.txt)+'</span></td>'+
+      '<td style="white-space:nowrap;font-size:11px;color:#444">'+escH(r.linhvuc||'—')+'</td>'+
+      '<td style="white-space:nowrap;font-size:11px;color:#555;text-align:right;min-width:80px">'+(function(){const f=fmtKhaiToan(r.khaitoan);return f==='—'?'<span style="color:#ccc">—</span>':escH(f);})()+'</td>'+
+      '<td class="dvmt-cell">'+buildDvmtHtml(r.dvmt)+'</td>'+
+      '<td style="white-space:nowrap;color:#555">'+r.ngayPHStr+'</td>'+
+      '<td style="white-space:nowrap;font-weight:600;color:#00695c">'+r.ngayDStr+'</td>'+
+      '<td style="white-space:nowrap;text-align:center"><span class="'+dlD.cls+'">'+dlD.txt+'</span></td>'+
+      '<td><span class="'+ttCls+'">'+escH(r.trangthai)+'</span></td>'+
+      '<td style="white-space:nowrap;text-align:center"><span class="'+tvD.cls+'">'+tvD.txt+'</span></td>'+
+      '<td class="lv-cell">'+lvHtml+'</td>';
+    tb.appendChild(tr);
+  });
+  setTimeout(updateScrollBar,50);
+}
+
+// ================================================================
 // TAB SWITCH
 // ================================================================
 function switchTab(name){
   document.querySelectorAll('.tab-btn').forEach((b,i)=>{
-    b.classList.toggle('active',(name==='main'&&i===0)||(name==='warn'&&i===1));
+    b.classList.toggle('active',(name==='main'&&i===0)||(name==='g2'&&i===1)||(name==='warn'&&i===2));
   });
   document.getElementById('tab-main').classList.toggle('active',name==='main');
+  document.getElementById('tab-g2').classList.toggle('active',name==='g2');
   document.getElementById('tab-warn').classList.toggle('active',name==='warn');
   // sync mobile nav
   document.getElementById('mnb-main')?.classList.toggle('active',name==='main');
+  document.getElementById('mnb-g2')?.classList.toggle('active',name==='g2');
   document.getElementById('mnb-warn')?.classList.toggle('active',name==='warn');
   // Cập nhật sticky scroll bar sang bảng đang xem
-  const tabId = name==='warn' ? 'tab-warn' : 'tab-main';
-  const wrap = document.querySelector('#'+tabId+' .table-wrap');
+  let wrap=null;
+  if(name==='warn') wrap=document.querySelector('#tab-warn .table-wrap,.warn-wrap .table-scroll');
+  else if(name==='g2') wrap=document.querySelector('#tab-g2 .g2-wrap .table-scroll');
+  else wrap=document.querySelector('#tab-main .table-wrap');
   if(wrap) setTimeout(()=>setScrollTarget(wrap), 80);
 }
 
@@ -1193,13 +1350,14 @@ function mobNav(name){
 // PRINT
 // ================================================================
 function printReport(){
-  // Trước khi in: đảm bảo cả 2 tab đều có dữ liệu
+  // Trước khi in: đảm bảo cả 3 tab đều hiển thị
   document.getElementById('tab-main').style.display='block';
+  document.getElementById('tab-g2').style.display='block';
   document.getElementById('tab-warn').style.display='block';
   window.print();
-  // Sau khi in: khôi phục tab đang active
-  const mainActive=document.getElementById('tab-main').classList.contains('active');
+  // Sau khi in: khôi phục
   document.getElementById('tab-main').style.display='';
+  document.getElementById('tab-g2').style.display='';
   document.getElementById('tab-warn').style.display='';
 }
 
