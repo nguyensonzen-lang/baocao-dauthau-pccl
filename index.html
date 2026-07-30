@@ -144,6 +144,14 @@ tbody td:first-child{text-align:center;color:#aaa;font-size:11px;vertical-align:
 .lv-extra{display:none}
 .lv-more-btn{font-size:10px;color:#2980b9;cursor:pointer;background:none;border:none;padding:2px 0 0;text-decoration:underline;display:block;margin-top:2px}
 
+/* G2 FILTER BAR */
+.g2-filter-bar{background:#fff;margin:0 20px 0;padding:10px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;border:1px solid #b2dfdb;border-top:none;border-bottom:none}
+.g2-filter-bar label{font-size:12px;color:#555;font-weight:500;white-space:nowrap}
+.g2-filter-bar select{border:1px solid #b2dfdb;border-radius:6px;padding:4px 10px;font-size:12px;color:#333;background:#f0faf9;outline:none;cursor:pointer}
+.g2-filter-bar input[type=text]{border:1px solid #b2dfdb;border-radius:6px;padding:4px 10px;font-size:12px;color:#333;background:#f0faf9;outline:none;width:200px;transition:border-color .15s}
+.g2-filter-bar input[type=text]:focus{border-color:#00796b;background:#fff}
+.btn-reset-g2{background:#e0f2f1;border:none;border-radius:6px;padding:5px 12px;font-size:12px;color:#00695c;cursor:pointer;font-weight:600}
+
 /* G2 TABLE */
 .g2-wrap{background:#fff;border-radius:0 10px 10px 10px;margin:0 20px 20px;box-shadow:0 1px 4px rgba(0,0,0,.08);overflow:hidden;border:1px solid #b2dfdb}
 .g2-header-row{background:#e0f2f1;padding:12px 18px;display:flex;align-items:center;gap:8px;border-bottom:2px solid #b2dfdb}
@@ -254,7 +262,7 @@ tbody td:first-child{text-align:center;color:#aaa;font-size:11px;vertical-align:
   @page{size:A4 landscape;margin:8mm 7mm}
 
   body{background:#fff!important;font-size:8pt;margin:0;padding:0}
-  #loading,.print-btn-wrap,.mob-nav,.tabs-row,.filter-bar,.btn-reset,.footer,
+  #loading,.print-btn-wrap,.mob-nav,.tabs-row,.filter-bar,.g2-filter-bar,.btn-reset,.btn-reset-g2,.footer,
   .table-scroll::after{display:none!important}
   #main{display:block!important}
 
@@ -611,6 +619,20 @@ tbody td:first-child{text-align:center;color:#aaa;font-size:11px;vertical-align:
 
   <!-- TAB 3 – G2 -->
   <div id="tab-g2" class="tab-panel">
+    <div class="g2-filter-bar">
+      <label>Tên công trình:</label>
+      <input type="text" id="g2-search" placeholder="Nhập tên công trình..." oninput="applyG2Filters()">
+      <label>Lĩnh vực:</label>
+      <select id="g2-lv" onchange="applyG2Filters()">
+        <option value="">Tất cả</option>
+      </select>
+      <label>Người PT:</label>
+      <select id="g2-pt" onchange="applyG2Filters()">
+        <option value="">Tất cả</option>
+      </select>
+      <button class="btn-reset-g2" onclick="resetG2Filters()">↺ Reset</button>
+      <span class="filter-count">Hiển thị: <strong id="g2-show">0</strong> / <strong id="g2-total">0</strong></span>
+    </div>
     <div class="g2-wrap">
       <div class="g2-header-row">
         <span class="gh-title">📅 Đã PH HSMT – Chưa đóng thầu</span>
@@ -639,8 +661,8 @@ tbody td:first-child{text-align:center;color:#aaa;font-size:11px;vertical-align:
           <tbody id="g2-tbody"></tbody>
         </table>
       </div>
-    </div>
-  </div>
+    </div><!-- /g2-wrap -->
+  </div><!-- /tab-g2 -->
 
   <div class="footer">Dữ liệu cập nhật tự động mỗi khi mở file &nbsp;|&nbsp; PCCL – Phòng KHVT</div>
 </div>
@@ -1257,6 +1279,63 @@ function renderWarnTable(){
 }
 
 // ================================================================
+// G2 FILTERS
+// ================================================================
+let _g2List=[], _g2Filtered=[];
+
+function buildG2Filters(){
+  _g2List=allData
+    .filter(r=>r.gd.code==='g2')
+    .sort((a,b)=>{
+      if(!a.dN&&!b.dN) return 0;
+      if(!a.dN) return 1;
+      if(!b.dN) return -1;
+      return a.dN-b.dN;
+    });
+
+  const lvs=[...new Set(_g2List.map(r=>r.linhvuc).filter(Boolean))].sort();
+  const selLV=document.getElementById('g2-lv');
+  if(selLV){
+    selLV.innerHTML='<option value="">Tất cả</option>';
+    lvs.forEach(l=>{const o=document.createElement('option');o.value=l;o.textContent=l;selLV.appendChild(o);});
+  }
+
+  const pts=[...new Set(_g2List.map(r=>r.nguoipt).filter(Boolean))].sort();
+  const selPT=document.getElementById('g2-pt');
+  if(selPT){
+    selPT.innerHTML='<option value="">Tất cả</option>';
+    pts.forEach(p=>{const o=document.createElement('option');o.value=p;o.textContent=p;selPT.appendChild(o);});
+  }
+}
+
+function applyG2Filters(){
+  const fLV=(document.getElementById('g2-lv')||{}).value||'';
+  const fPT=(document.getElementById('g2-pt')||{}).value||'';
+  const fSR=((document.getElementById('g2-search')||{}).value||'').trim().toLowerCase();
+  _g2Filtered=_g2List.filter(r=>{
+    if(fLV&&r.linhvuc!==fLV) return false;
+    if(fPT&&r.nguoipt!==fPT) return false;
+    if(fSR&&!(r.tenct||'').toLowerCase().includes(fSR)) return false;
+    return true;
+  });
+  const showEl=document.getElementById('g2-show');
+  const totEl=document.getElementById('g2-total');
+  if(showEl) showEl.textContent=_g2Filtered.length;
+  if(totEl)  totEl.textContent=_g2List.length;
+  _renderG2Rows(_g2Filtered);
+}
+
+function resetG2Filters(){
+  const sel=document.getElementById('g2-lv');
+  const spt=document.getElementById('g2-pt');
+  const sch=document.getElementById('g2-search');
+  if(sel) sel.value='';
+  if(spt) spt.value='';
+  if(sch) sch.value='';
+  applyG2Filters();
+}
+
+// ================================================================
 // RENDER G2 TABLE – Đã PH HSMT – Chưa đóng thầu
 // ================================================================
 function daysLeftDisplay(days){
@@ -1267,33 +1346,22 @@ function daysLeftDisplay(days){
   return {txt:days+' ngày',cls:'days-ok'};
 }
 
-function renderG2Table(){
-  const list=allData
-    .filter(r=>r.gd.code==='g2')
-    .sort((a,b)=>{
-      if(!a.dN&&!b.dN) return 0;
-      if(!a.dN) return 1;
-      if(!b.dN) return -1;
-      return a.dN-b.dN; // gần nhất lên đầu
-    });
-
+function _renderG2Rows(list){
   const subEl=document.getElementById('g2-sub');
-  if(subEl) subEl.textContent='— '+list.length+' gói thầu đang trong giai đoạn mở thầu';
+  if(subEl) subEl.textContent='— '+_g2List.length+' gói thầu đang trong giai đoạn mở thầu';
 
   const tb=document.getElementById('g2-tbody');
   tb.innerHTML='';
   if(!list.length){
-    tb.innerHTML='<tr><td colspan="14" style="text-align:center;padding:28px;color:#999">Không có gói thầu nào trong giai đoạn Đã PH HSMT – Chưa đóng</td></tr>';
+    tb.innerHTML='<tr><td colspan="14" style="text-align:center;padding:28px;color:#999">Không có gói thầu nào phù hợp bộ lọc</td></tr>';
     return;
   }
-
   list.forEach((r,i)=>{
     const ttCls=r.trangthai==='Quá hạn'?'badge b-qh':'badge b-dxl';
     const tvD=tvDisplay(r.tvNum);
     const htD=htDisplay(r.ht);
     const dlD=daysLeftDisplay(r.daysLeft);
     const lvHtml=buildLvHtml(r.lvAll);
-
     const tr=document.createElement('tr');
     tr.innerHTML=
       '<td style="text-align:center;color:#aaa;font-size:11px">'+(i+1)+'</td>'+
@@ -1313,6 +1381,11 @@ function renderG2Table(){
     tb.appendChild(tr);
   });
   setTimeout(updateScrollBar,50);
+}
+
+function renderG2Table(){
+  buildG2Filters();
+  applyG2Filters();
 }
 
 // ================================================================
