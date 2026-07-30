@@ -145,12 +145,32 @@ tbody td:first-child{text-align:center;color:#aaa;font-size:11px;vertical-align:
 .lv-more-btn{font-size:10px;color:#2980b9;cursor:pointer;background:none;border:none;padding:2px 0 0;text-decoration:underline;display:block;margin-top:2px}
 
 /* G2 FILTER BAR */
-.g2-filter-bar{background:#fff;margin:0 20px 0;padding:10px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;border:1px solid #b2dfdb;border-top:none;border-bottom:none}
+.g2-filter-bar{background:#fff;margin:0 20px 0;padding:10px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;border:2px solid #00796b;border-top:none;border-bottom:none}
 .g2-filter-bar label{font-size:12px;color:#555;font-weight:500;white-space:nowrap}
-.g2-filter-bar select{border:1px solid #b2dfdb;border-radius:6px;padding:4px 10px;font-size:12px;color:#333;background:#f0faf9;outline:none;cursor:pointer}
-.g2-filter-bar input[type=text]{border:1px solid #b2dfdb;border-radius:6px;padding:4px 10px;font-size:12px;color:#333;background:#f0faf9;outline:none;width:200px;transition:border-color .15s}
+.g2-filter-bar input[type=text]{border:1px solid #b2dfdb;border-radius:6px;padding:4px 10px;font-size:12px;color:#333;background:#f0faf9;outline:none;width:180px;transition:border-color .15s}
 .g2-filter-bar input[type=text]:focus{border-color:#00796b;background:#fff}
 .btn-reset-g2{background:#e0f2f1;border:none;border-radius:6px;padding:5px 12px;font-size:12px;color:#00695c;cursor:pointer;font-weight:600}
+
+/* MULTI-SELECT CHECKBOX DROPDOWN */
+.multi-drop-wrap{position:relative;display:inline-block}
+.multi-drop-btn{border:1px solid #b2dfdb;border-radius:6px;padding:4px 28px 4px 10px;font-size:12px;color:#333;background:#f0faf9;cursor:pointer;white-space:nowrap;min-width:130px;max-width:200px;text-align:left;position:relative;line-height:1.4}
+.multi-drop-btn:hover{border-color:#00796b;background:#e8f5f0}
+.multi-drop-btn .drop-arrow{position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:10px;color:#00796b;pointer-events:none}
+.multi-drop-btn .drop-label{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:160px}
+.multi-drop-panel{display:none;position:absolute;top:calc(100% + 4px);left:0;z-index:800;background:#fff;border:1px solid #b2dfdb;border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,.14);min-width:190px;max-height:220px;overflow-y:auto;padding:4px 0}
+.multi-drop-panel.open{display:block}
+.multi-drop-item{display:flex;align-items:center;gap:8px;padding:5px 14px;font-size:12px;color:#333;cursor:pointer;user-select:none;transition:background .1s}
+.multi-drop-item:hover{background:#e0f2f1}
+.multi-drop-item input[type=checkbox]{accent-color:#00796b;width:14px;height:14px;cursor:pointer;flex-shrink:0}
+.multi-drop-item label{cursor:pointer;flex:1;line-height:1.4}
+.multi-drop-sep{height:1px;background:#e0f2f1;margin:3px 0}
+.drop-sel-badge{display:inline-block;background:#00796b;color:#fff;border-radius:10px;font-size:10px;padding:0 6px;margin-left:4px;vertical-align:middle}
+
+/* VIỀN NỔI BẬT THEO TAB */
+#tab-main .filter-bar{border-left:2px solid #1a3a6b;border-right:2px solid #1a3a6b}
+#tab-main .table-wrap{border:2px solid #1a3a6b;border-top:4px solid #1a3a6b;box-shadow:0 3px 14px rgba(26,58,107,.14)}
+#tab-g2 .g2-wrap{border:2px solid #00796b;border-top:4px solid #00796b;box-shadow:0 3px 14px rgba(0,121,107,.14)}
+#tab-warn .warn-wrap{border:2px solid #e65100;border-top:4px solid #e65100;box-shadow:0 3px 14px rgba(230,81,0,.14)}
 
 /* G2 TABLE */
 .g2-wrap{background:#fff;border-radius:0 10px 10px 10px;margin:0 20px 20px;box-shadow:0 1px 4px rgba(0,0,0,.08);overflow:hidden;border:1px solid #b2dfdb}
@@ -620,16 +640,24 @@ tbody td:first-child{text-align:center;color:#aaa;font-size:11px;vertical-align:
   <!-- TAB 3 – G2 -->
   <div id="tab-g2" class="tab-panel">
     <div class="g2-filter-bar">
-      <label>Tên công trình:</label>
+      <label>Tên CT:</label>
       <input type="text" id="g2-search" placeholder="Nhập tên công trình..." oninput="applyG2Filters()">
       <label>Lĩnh vực:</label>
-      <select id="g2-lv" onchange="applyG2Filters()">
-        <option value="">Tất cả</option>
-      </select>
+      <div class="multi-drop-wrap">
+        <button class="multi-drop-btn" onclick="toggleDrop('drop-g2-lv',event)" type="button">
+          <span class="drop-label" id="drop-g2-lv-label">Tất cả</span>
+          <span class="drop-arrow">▾</span>
+        </button>
+        <div class="multi-drop-panel" id="drop-g2-lv"></div>
+      </div>
       <label>Người PT:</label>
-      <select id="g2-pt" onchange="applyG2Filters()">
-        <option value="">Tất cả</option>
-      </select>
+      <div class="multi-drop-wrap">
+        <button class="multi-drop-btn" onclick="toggleDrop('drop-g2-pt',event)" type="button">
+          <span class="drop-label" id="drop-g2-pt-label">Tất cả</span>
+          <span class="drop-arrow">▾</span>
+        </button>
+        <div class="multi-drop-panel" id="drop-g2-pt"></div>
+      </div>
       <button class="btn-reset-g2" onclick="resetG2Filters()">↺ Reset</button>
       <span class="filter-count">Hiển thị: <strong id="g2-show">0</strong> / <strong id="g2-total">0</strong></span>
     </div>
@@ -1279,9 +1307,59 @@ function renderWarnTable(){
 }
 
 // ================================================================
-// G2 FILTERS
+// G2 FILTERS – MULTI-SELECT CHECKBOX DROPDOWN
 // ================================================================
 let _g2List=[], _g2Filtered=[];
+let _g2SelLV=new Set(), _g2SelPT=new Set();
+
+// Render checkbox list vào panel
+function _buildDropList(dropId, items, selSet){
+  const panel=document.getElementById(dropId);
+  if(!panel) return;
+  panel.innerHTML='';
+  if(!items.length){panel.innerHTML='<div class="multi-drop-item" style="color:#aaa">Không có dữ liệu</div>';return;}
+  items.forEach((v,idx)=>{
+    const d=document.createElement('div');
+    d.className='multi-drop-item';
+    const cid=dropId+'-'+idx;
+    d.innerHTML='<input type="checkbox" id="'+cid+'" value="'+v.replace(/"/g,'&quot;').replace(/'/g,'&#39;')+'" '+(selSet.has(v)?'checked':'')+' onchange="_dropChg(\''+dropId+'\')"> <label for="'+cid+'">'+escH(v)+'</label>';
+    panel.appendChild(d);
+  });
+}
+
+// Khi checkbox thay đổi → cập nhật Set + label + filter
+function _dropChg(dropId){
+  const panel=document.getElementById(dropId);
+  if(!panel) return;
+  const selSet=dropId==='drop-g2-lv'?_g2SelLV:_g2SelPT;
+  const labelId=dropId+'-label';
+  selSet.clear();
+  panel.querySelectorAll('input[type=checkbox]:checked').forEach(c=>selSet.add(c.value));
+  // Cập nhật label nút
+  const lbl=document.getElementById(labelId);
+  if(lbl){
+    if(selSet.size===0) lbl.textContent='Tất cả';
+    else if(selSet.size===1) lbl.textContent=[...selSet][0];
+    else lbl.textContent=selSet.size+' đã chọn';
+  }
+  applyG2Filters();
+}
+
+// Mở / đóng dropdown (đóng tất cả trước khi mở cái được chọn)
+function toggleDrop(id, e){
+  if(e){e.stopPropagation();}
+  const panel=document.getElementById(id);
+  if(!panel) return;
+  const wasOpen=panel.classList.contains('open');
+  document.querySelectorAll('.multi-drop-panel').forEach(p=>p.classList.remove('open'));
+  if(!wasOpen) panel.classList.add('open');
+}
+
+// Đóng khi click ngoài (bỏ qua click bên trong dropdown để giữ panel mở khi tick checkbox)
+document.addEventListener('click',function(e){
+  if(e.target.closest('.multi-drop-wrap')) return;
+  document.querySelectorAll('.multi-drop-panel').forEach(p=>p.classList.remove('open'));
+});
 
 function buildG2Filters(){
   _g2List=allData
@@ -1292,29 +1370,17 @@ function buildG2Filters(){
       if(!b.dN) return -1;
       return a.dN-b.dN;
     });
-
   const lvs=[...new Set(_g2List.map(r=>r.linhvuc).filter(Boolean))].sort();
-  const selLV=document.getElementById('g2-lv');
-  if(selLV){
-    selLV.innerHTML='<option value="">Tất cả</option>';
-    lvs.forEach(l=>{const o=document.createElement('option');o.value=l;o.textContent=l;selLV.appendChild(o);});
-  }
-
+  _buildDropList('drop-g2-lv', lvs, _g2SelLV);
   const pts=[...new Set(_g2List.map(r=>r.nguoipt).filter(Boolean))].sort();
-  const selPT=document.getElementById('g2-pt');
-  if(selPT){
-    selPT.innerHTML='<option value="">Tất cả</option>';
-    pts.forEach(p=>{const o=document.createElement('option');o.value=p;o.textContent=p;selPT.appendChild(o);});
-  }
+  _buildDropList('drop-g2-pt', pts, _g2SelPT);
 }
 
 function applyG2Filters(){
-  const fLV=(document.getElementById('g2-lv')||{}).value||'';
-  const fPT=(document.getElementById('g2-pt')||{}).value||'';
   const fSR=((document.getElementById('g2-search')||{}).value||'').trim().toLowerCase();
   _g2Filtered=_g2List.filter(r=>{
-    if(fLV&&r.linhvuc!==fLV) return false;
-    if(fPT&&r.nguoipt!==fPT) return false;
+    if(_g2SelLV.size>0&&!_g2SelLV.has(r.linhvuc)) return false;
+    if(_g2SelPT.size>0&&!_g2SelPT.has(r.nguoipt)) return false;
     if(fSR&&!(r.tenct||'').toLowerCase().includes(fSR)) return false;
     return true;
   });
@@ -1326,11 +1392,17 @@ function applyG2Filters(){
 }
 
 function resetG2Filters(){
-  const sel=document.getElementById('g2-lv');
-  const spt=document.getElementById('g2-pt');
+  _g2SelLV.clear(); _g2SelPT.clear();
+  // Bỏ tick tất cả checkbox
+  ['drop-g2-lv','drop-g2-pt'].forEach(id=>{
+    document.querySelectorAll('#'+id+' input[type=checkbox]').forEach(c=>{c.checked=false;});
+  });
+  // Reset label nút
+  const ll=document.getElementById('drop-g2-lv-label');
+  const lp=document.getElementById('drop-g2-pt-label');
+  if(ll) ll.textContent='Tất cả';
+  if(lp) lp.textContent='Tất cả';
   const sch=document.getElementById('g2-search');
-  if(sel) sel.value='';
-  if(spt) spt.value='';
   if(sch) sch.value='';
   applyG2Filters();
 }
