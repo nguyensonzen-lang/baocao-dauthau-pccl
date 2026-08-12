@@ -1019,8 +1019,6 @@ function loadData(){
   window.google.visualization=window.google.visualization||{};
   window.google.visualization.Query=window.google.visualization.Query||{};
   window.google.visualization.Query.setResponse=function(r){clearTimeout(_timer);_processAll(r);};
-  // Callback riêng cho query phụ Tab 4 (Hoàn Thành)
-  window._htCallback=function(r){_processHT(r);};
 
   const q=encodeURIComponent('select D,F,G,H,K,L,N,AA,M,AB,AC,BM offset 1');
   const url='https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?gid='+SHEET_GID+'&tqx=out:json&tq='+q;
@@ -1591,17 +1589,20 @@ function renderG2Table(){
 // Query riêng để tránh làm vỡ query chính
 // ================================================================
 function _loadHTData(){
-  // Backtick escape `AS` để tránh xung đột keyword SQL trong gviz
+  // Dùng fetch() thay JSONP để tránh xung đột với google.visualization.Query.setResponse
+  // (Google Sheets gviz ignore tqx handler parameter → cả 2 query đều gọi cùng 1 callback)
   const q=encodeURIComponent('select D,F,G,H,M,AH,AJ,`AS`,AL,BF,AC,AA offset 1');
   const url='https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?gid='+SHEET_GID
-            +'&tqx=out:json;handler:_htCallback&tq='+q;
-  const old=document.getElementById('_gviz_ht');
-  if(old) old.remove();
-  const s=document.createElement('script');
-  s.id='_gviz_ht';
-  s.onerror=function(){console.warn('Tab 4: HT query thất bại (có thể cột không tồn tại).');};
-  s.src=url;
-  document.head.appendChild(s);
+            +'&tqx=out:json&tq='+q;
+  fetch(url)
+    .then(function(r){return r.text();})
+    .then(function(text){
+      // Strip JSONP wrapper: /*O_o*/\ngoogle.visualization.Query.setResponse({...});
+      const m=text.match(/google\.visualization\.Query\.setResponse\(([\s\S]+)\);?\s*$/);
+      if(!m) throw new Error('HT response không hợp lệ');
+      _processHT(JSON.parse(m[1]));
+    })
+    .catch(function(e){console.warn('Tab 4: HT query thất bại',e);});
 }
 
 function _processHT(resp){
