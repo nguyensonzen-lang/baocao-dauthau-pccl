@@ -841,7 +841,9 @@ tbody td:first-child{text-align:center;color:#aaa;font-size:11px;vertical-align:
 // ================================================================
 const SHEET_ID  = '1E7fUY1bh-KXyYd2FD5rmmUmKlNCdbbYsEDbt8JyUUNM';
 const SHEET_GID = '670748913';
-const CI = {MACT:0,PT:1,TEN:2,LINHVUC:3,KHAITOAN:4,NGAYPH:5,NGAYDONG:6,TT:7,HT:8,DVMT:9,LANLV:10,TV:11,SOHD:12,NGAYHD:13,GIATRIHD:14,DVTRUNG:15,NGAYHETHL:16};
+const CI    = {MACT:0,PT:1,TEN:2,LINHVUC:3,KHAITOAN:4,NGAYPH:5,NGAYDONG:6,TT:7,HT:8,DVMT:9,LANLV:10,TV:11};
+// CI cho query phụ Tab 4 – Hoàn Thành (select D,F,G,H,M,AH,AJ,`AS`,AL,BF,AC,AA offset 1)
+const CI_HT = {MACT:0,PT:1,TEN:2,LINHVUC:3,HT:4,SOHD:5,NGAYHD:6,GIATRIHD:7,DVTRUNG:8,NGAYHETHL:9,LANLV:10,TT:11};
 
 let BC_DATE=null, allData=[], filtered=[], allDataHT=[], _timer=null;
 const AUTO_REFRESH_MS = 5 * 60 * 1000; // 5 phút
@@ -1017,8 +1019,10 @@ function loadData(){
   window.google.visualization=window.google.visualization||{};
   window.google.visualization.Query=window.google.visualization.Query||{};
   window.google.visualization.Query.setResponse=function(r){clearTimeout(_timer);_processAll(r);};
+  // Callback riêng cho query phụ Tab 4 (Hoàn Thành)
+  window._htCallback=function(r){_processHT(r);};
 
-  const q=encodeURIComponent('select D,F,G,H,K,L,N,AA,M,AB,AC,BM,AH,AJ,AS,AL,BF offset 1');
+  const q=encodeURIComponent('select D,F,G,H,K,L,N,AA,M,AB,AC,BM offset 1');
   const url='https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?gid='+SHEET_GID+'&tqx=out:json&tq='+q;
 
   const old=document.getElementById('_gviz');
@@ -1077,34 +1081,11 @@ function _processAll(resp){
   try{
     if(!resp||!resp.table){showErr('Phản hồi không hợp lệ.');return;}
     const rows=resp.table.rows||[];
-    allData=[]; allDataHT=[];
+    allData=[];
     rows.forEach(row=>{
       if(!row||!row.c) return;
       const c=row.c;
       const aa=getStr(c[CI.TT]).trim();
-
-      // Tách riêng gói Hoàn Thành vào allDataHT
-      if(aa==='Hoàn Thành'){
-        const dHD =parseGvizDate(c[CI.NGAYHD]||null);
-        const dHL =parseGvizDate(c[CI.NGAYHETHL]||null);
-        const daysHL=dHL?daysDiff(BC_DATE,dHL):null;
-        allDataHT.push({
-          mact    :getStr(c[CI.MACT]).trim()||'---',
-          nguoipt :getStr(c[CI.PT]).trim(),
-          tenct   :getStr(c[CI.TEN]).trim(),
-          linhvuc :getStr(c[CI.LINHVUC]).trim(),
-          ht      :getStr(c[CI.HT]).trim(),
-          sohd    :getStr(c[CI.SOHD]).trim(),
-          ngayHDStr:dHD?fmtDate(dHD):'—',
-          giatri  :getStr(c[CI.GIATRIHD]).trim(),
-          dvtrung :getStr(c[CI.DVTRUNG]).trim(),
-          ngayHetHLStr:dHL?fmtDate(dHL):'—',
-          daysHL, dHL,
-          lvAll   :getAllLV(getStr(c[CI.LANLV]).trim())
-        });
-        return;
-      }
-
       if(aa!=='Đang xử lý'&&aa!=='Quá hạn') return;
 
       const ngayPH  =c[CI.NGAYPH]||null;
@@ -1135,7 +1116,9 @@ function _processAll(resp){
       });
     });
 
-    buildFilters(); applyFilters(); updateKPI(); updateDist(); renderWarnTable(); renderG2Table(); renderHTTable();
+    buildFilters(); applyFilters(); updateKPI(); updateDist(); renderWarnTable(); renderG2Table();
+    // Sau khi render xong tab chính, load query phụ cho Tab 4 Hoàn Thành
+    _loadHTData();
     document.getElementById('loading').style.display='none';
     document.getElementById('main').style.display='block';
 
@@ -1335,10 +1318,6 @@ function updateKPI(){
   if(tg2) tg2.textContent=g2Cnt2;
   const mg2=document.getElementById('mob-g2-cnt');
   if(mg2) mg2.textContent=g2Cnt2;
-  const tht=document.getElementById('tab-ht-cnt');
-  if(tht) tht.textContent=allDataHT.length;
-  const mht=document.getElementById('mob-ht-cnt');
-  if(mht) mht.textContent=allDataHT.length;
   _syncMobBadge(tvW);
 
   const tuQH=allData.filter(r=>isHTU(r.ht)&&r.trangthai==='Quá hạn').length;
@@ -1604,6 +1583,64 @@ function _renderG2Rows(list){
 function renderG2Table(){
   buildG2Filters();
   applyG2Filters();
+}
+
+// ================================================================
+// HT LOAD – QUERY PHỤ cho Tab 4 (Hoàn Thành)
+// AS là từ khóa SQL nên dùng backtick để escape: `AS`
+// Query riêng để tránh làm vỡ query chính
+// ================================================================
+function _loadHTData(){
+  // Backtick escape `AS` để tránh xung đột keyword SQL trong gviz
+  const q=encodeURIComponent('select D,F,G,H,M,AH,AJ,`AS`,AL,BF,AC,AA offset 1');
+  const url='https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?gid='+SHEET_GID
+            +'&tqx=out:json;handler:_htCallback&tq='+q;
+  const old=document.getElementById('_gviz_ht');
+  if(old) old.remove();
+  const s=document.createElement('script');
+  s.id='_gviz_ht';
+  s.onerror=function(){console.warn('Tab 4: HT query thất bại (có thể cột không tồn tại).');};
+  s.src=url;
+  document.head.appendChild(s);
+}
+
+function _processHT(resp){
+  try{
+    if(!resp||!resp.table) return;
+    const rows=resp.table.rows||[];
+    allDataHT=[];
+    rows.forEach(row=>{
+      if(!row||!row.c) return;
+      const c=row.c;
+      // Lọc client-side: chỉ lấy "Hoàn Thành"
+      const aa=getStr(c[CI_HT.TT]).trim();
+      if(aa!=='Hoàn Thành') return;
+      const dHD=parseGvizDate(c[CI_HT.NGAYHD]||null);
+      const dHL=parseGvizDate(c[CI_HT.NGAYHETHL]||null);
+      const daysHL=dHL?daysDiff(BC_DATE,dHL):null;
+      allDataHT.push({
+        mact    :getStr(c[CI_HT.MACT]).trim()||'---',
+        nguoipt :getStr(c[CI_HT.PT]).trim(),
+        tenct   :getStr(c[CI_HT.TEN]).trim(),
+        linhvuc :getStr(c[CI_HT.LINHVUC]).trim(),
+        ht      :getStr(c[CI_HT.HT]).trim(),
+        sohd    :getStr(c[CI_HT.SOHD]).trim(),
+        ngayHDStr:dHD?fmtDate(dHD):'—',
+        giatri  :getStr(c[CI_HT.GIATRIHD]).trim(),
+        dvtrung :getStr(c[CI_HT.DVTRUNG]).trim(),
+        ngayHetHLStr:dHL?fmtDate(dHL):'—',
+        daysHL, dHL,
+        lvAll   :getAllLV(getStr(c[CI_HT.LANLV]).trim())
+      });
+    });
+    // Cập nhật badge đếm
+    const tht=document.getElementById('tab-ht-cnt');
+    if(tht) tht.textContent=allDataHT.length;
+    const mht=document.getElementById('mob-ht-cnt');
+    if(mht) mht.textContent=allDataHT.length;
+    // Render Tab 4
+    renderHTTable();
+  }catch(e){console.error('_processHT error:',e);}
 }
 
 // ================================================================
