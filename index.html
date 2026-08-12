@@ -1083,8 +1083,8 @@ function _processAll(resp){
       const c=row.c;
       const aa=getStr(c[CI.TT]).trim();
 
-      // Tách riêng gói Hoàn thành vào allDataHT
-      if(aa==='Hoàn thành'){
+      // Tách riêng gói Hoàn Thành vào allDataHT
+      if(aa==='Hoàn Thành'){
         const dHD =parseGvizDate(c[CI.NGAYHD]||null);
         const dHL =parseGvizDate(c[CI.NGAYHETHL]||null);
         const daysHL=dHL?daysDiff(BC_DATE,dHL):null;
