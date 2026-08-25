@@ -172,7 +172,19 @@ tbody td:first-child{text-align:center;color:#aaa;font-size:11px;vertical-align:
 #tab-g2 .g2-wrap{border:2px solid #00796b;border-top:4px solid #00796b;box-shadow:0 3px 14px rgba(0,121,107,.14)}
 #tab-warn .warn-wrap{border:2px solid #e65100;border-top:4px solid #e65100;box-shadow:0 3px 14px rgba(230,81,0,.14)}
 #tab-ht .ht-wrap{border:2px solid #2e7d32;border-top:4px solid #2e7d32;box-shadow:0 3px 14px rgba(46,125,50,.14)}
-
+#tab-g1 .g1-wrap{border:2px solid #00838f;border-top:4px solid #00838f;box-shadow:0 3px 14px rgba(0,131,143,.14)}
+.g1-filter-bar{background:#fff;margin:0 20px 0;padding:10px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;border:2px solid #00838f;border-top:none;border-bottom:none}
+.g1-filter-bar label{font-size:12px;color:#555;font-weight:500;white-space:nowrap}
+.g1-filter-bar select{border:1px solid #80deea;border-radius:6px;padding:4px 8px;font-size:12px;color:#333;background:#e0f7fa;outline:none;cursor:pointer}
+.btn-reset-g1{background:#e0f7fa;border:none;border-radius:6px;padding:5px 12px;font-size:12px;color:#006064;cursor:pointer;font-weight:600}
+.g1-wrap{background:#fff;border-radius:0 10px 10px 10px;margin:0 20px 20px;box-shadow:0 1px 4px rgba(0,0,0,.08);overflow:hidden;border:1px solid #80deea}
+.g1-header-row{background:#e0f7fa;padding:12px 18px;display:flex;align-items:center;gap:8px;border-bottom:2px solid #80deea}
+.g1-header-row .g1h-title{font-size:13px;font-weight:700;color:#006064}
+.g1-header-row .g1h-sub{font-size:11px;color:#00838f;margin-left:4px}
+.g1-table{width:100%;min-width:860px;border-collapse:collapse;font-size:12px}
+.g1-table th{background:#e0f7fa;padding:9px 10px;text-align:left;font-weight:700;color:#006064;font-size:11px;border-bottom:2px solid #80deea;white-space:nowrap;position:sticky;top:0;z-index:2}
+.g1-table td{padding:8px 10px;border-bottom:1px solid #e0f7fa;vertical-align:top;color:#333}
+.g1-table tr:hover td{background:#f0fdfd}
 /* HT FILTER BAR */
 .ht-filter-bar{background:#fff;margin:0 20px 0;padding:10px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;border:2px solid #2e7d32;border-top:none;border-bottom:none}
 .ht-filter-bar label{font-size:12px;color:#555;font-weight:500;white-space:nowrap}
@@ -306,7 +318,7 @@ tbody td:first-child{text-align:center;color:#aaa;font-size:11px;vertical-align:
   @page{size:A4 landscape;margin:8mm 7mm}
 
   body{background:#fff!important;font-size:8pt;margin:0;padding:0}
-  #loading,.print-btn-wrap,.mob-nav,.tabs-row,.filter-bar,.g2-filter-bar,.ht-filter-bar,.btn-reset,.btn-reset-g2,.btn-reset-ht,.footer,
+  #loading,.print-btn-wrap,.mob-nav,.tabs-row,.filter-bar,.g2-filter-bar,.ht-filter-bar,.g1-filter-bar,.btn-reset,.btn-reset-g2,.btn-reset-ht,.btn-reset-g1,.footer,
   .table-scroll::after{display:none!important}
   #main{display:block!important}
 
@@ -455,6 +467,13 @@ tbody td:first-child{text-align:center;color:#aaa;font-size:11px;vertical-align:
   tbody tr{page-break-inside:avoid}
   .filter-count{display:flex!important}
 
+  /* G1 TABLE – trang mới */
+  .tab-panel#tab-g1{page-break-before:always!important;margin-top:4mm!important}
+  .tab-panel#tab-g1::before{content:"CHUA PH HSMT";display:block!important;font-size:10pt!important;font-weight:700;color:#00838f;padding:5px 10px;margin:0 8px 5mm;border-left:4px solid #00838f;background:#e0f7fa;border-radius:2px}
+  .g1-wrap{margin:0 8px 6mm!important;box-shadow:none!important;border:1px solid #80deea!important;border-radius:4px!important;overflow:visible!important}
+  .g1-table{width:100%!important;min-width:unset!important;table-layout:fixed!important;border-collapse:collapse!important;font-size:7.5pt!important}
+  .g1-table th,.g1-table td{padding:4px 5px!important;border:0.5pt solid #b2ebf2!important}
+  .g1-table th{background:#e0f7fa!important;font-size:7pt!important}
   /* HT TABLE – trang mới */
   .tab-panel#tab-ht{page-break-before:always!important;margin-top:4mm!important}
   .tab-panel#tab-ht::before{
@@ -589,6 +608,7 @@ tbody td:first-child{text-align:center;color:#aaa;font-size:11px;vertical-align:
   <!-- TABS -->
   <div class="tabs-row">
     <button class="tab-btn active" onclick="switchTab('main')">📋 Danh sách gói thầu</button>
+    <button class="tab-btn" onclick="switchTab('g1')">📂 Chưa PH HSMT &nbsp;<span id="tab-g1-cnt" style="background:#00838f;color:#fff;border-radius:10px;padding:1px 7px;font-size:10px">0</span></button>
     <button class="tab-btn" onclick="switchTab('g2')">📅 Đã PH – Chưa đóng &nbsp;<span id="tab-g2-cnt" style="background:#00796b;color:#fff;border-radius:10px;padding:1px 7px;font-size:10px">0</span></button>
     <button class="tab-btn" onclick="switchTab('warn')">⚠ Cảnh báo Trung vị &gt;20 ngày &nbsp;<span id="tab-warn-cnt" style="background:#e65100;color:#fff;border-radius:10px;padding:1px 7px;font-size:10px">0</span></button>
     <button class="tab-btn" onclick="switchTab('ht')">✅ Hoàn thành &nbsp;<span id="tab-ht-cnt" style="background:#2e7d32;color:#fff;border-radius:10px;padding:1px 7px;font-size:10px">0</span></button>
@@ -658,6 +678,53 @@ tbody td:first-child{text-align:center;color:#aaa;font-size:11px;vertical-align:
       </div>
     </div>
   </div>
+
+
+  <!-- TAB G1 – CHƯA PH HSMT -->
+  <div id="tab-g1" class="tab-panel">
+    <div class="g1-filter-bar">
+      <label>Hình thức:</label>
+      <select id="g1-ht" onchange="applyG1Filters()">
+        <option value="">Tất cả</option>
+        <option value="Đấu thầu rộng rãi">Đấu thầu rộng rãi</option>
+        <option value="Chỉ định thầu">Chỉ định thầu</option>
+      </select>
+      <label>Lĩnh vực:</label>
+      <div class="multi-drop-wrap">
+        <button class="multi-drop-btn" onclick="toggleDrop('drop-g1-lv',event)" type="button"><span class="drop-label" id="drop-g1-lv-label">Tất cả</span><span class="drop-arrow">▾</span></button>
+        <div class="multi-drop-panel" id="drop-g1-lv"></div>
+      </div>
+      <label>Người PT:</label>
+      <div class="multi-drop-wrap">
+        <button class="multi-drop-btn" onclick="toggleDrop('drop-g1-pt',event)" type="button"><span class="drop-label" id="drop-g1-pt-label">Tất cả</span><span class="drop-arrow">▾</span></button>
+        <div class="multi-drop-panel" id="drop-g1-pt"></div>
+      </div>
+      <button class="btn-reset-g1" onclick="resetG1Filters()">↺ Reset</button>
+      <span class="filter-count">Hiển thị: <strong id="g1-show">0</strong> / <strong id="g1-total">0</strong></span>
+    </div>
+    <div class="g1-wrap">
+      <div class="g1-header-row">
+        <span class="g1h-title">📂 Gói thầu chưa phát hành HSMT (Giai đoạn G1)</span>
+        <span class="g1h-sub" id="g1-sub">— đang tải...</span>
+      </div>
+      <div class="table-scroll">
+        <table class="g1-table">
+          <thead><tr>
+            <th style="width:32px">#</th>
+            <th style="min-width:110px">Mã CT</th>
+            <th style="min-width:90px">Người PT</th>
+            <th style="min-width:180px">Tên công trình</th>
+            <th style="min-width:100px">Hình thức</th>
+            <th style="min-width:100px">Lĩnh vực</th>
+            <th style="min-width:100px;text-align:right">Khái toán (đ)</th>
+            <th style="min-width:160px">Lần LV gần nhất</th>
+            <th style="min-width:80px;text-align:center">Trung vị (ngày)</th>
+          </tr></thead>
+          <tbody id="g1-tbody"><tr><td colspan="9" style="text-align:center;padding:28px;color:#999">Đang tải...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div><!-- /tab-g1 -->
 
   <!-- TAB 2 -->
   <div id="tab-warn" class="tab-panel">
@@ -808,6 +875,10 @@ tbody td:first-child{text-align:center;color:#aaa;font-size:11px;vertical-align:
   <button class="mob-nav-btn active" id="mnb-main" onclick="mobNav('main')">
     <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
     Danh sách
+  </button>
+  <button class="mob-nav-btn" id="mnb-g1" onclick="mobNav('g1')">
+    <svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+    Chưa PH <span id="mob-g1-cnt" style="background:#00838f;color:#fff;border-radius:8px;padding:0 5px;font-size:9px;margin-left:2px">0</span>
   </button>
   <button class="mob-nav-btn" id="mnb-g2" onclick="mobNav('g2')">
     <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
@@ -1114,7 +1185,7 @@ function _processAll(resp){
       });
     });
 
-    buildFilters(); applyFilters(); updateKPI(); updateDist(); renderWarnTable(); renderG2Table();
+    buildFilters(); applyFilters(); updateKPI(); updateDist(); renderWarnTable(); renderG2Table(); renderG1Table();
     // Sau khi render xong tab chính, load query phụ cho Tab 4 Hoàn Thành
     _loadHTData();
     document.getElementById('loading').style.display='none';
@@ -1424,8 +1495,91 @@ function renderWarnTable(){
 }
 
 // ================================================================
+// ================================================================
+// G1 FILTERS & RENDER – Chưa phát hành HSMT
+// ================================================================
+function buildG1Filters(){
+  _g1List=allData
+    .filter(r=>!isHTU(r.ht)&&r.gd.code==='g1')
+    .sort((a,b)=>a.mact.localeCompare(b.mact,'vi'));
+  const lvs=[...new Set(_g1List.map(r=>r.linhvuc).filter(Boolean))].sort();
+  _buildDropList('drop-g1-lv',lvs,_g1SelLV);
+  const pts=[...new Set(_g1List.map(r=>r.nguoipt).filter(Boolean))].sort();
+  _buildDropList('drop-g1-pt',pts,_g1SelPT);
+  const t=document.getElementById('tab-g1-cnt');
+  if(t) t.textContent=_g1List.length;
+  const m=document.getElementById('mob-g1-cnt');
+  if(m) m.textContent=_g1List.length;
+}
+
+function applyG1Filters(){
+  const fHT=(document.getElementById('g1-ht')||{}).value||'';
+  _g1Filtered=_g1List.filter(r=>{
+    if(fHT&&r.ht!==fHT) return false;
+    if(_g1SelLV.size>0&&!_g1SelLV.has(r.linhvuc)) return false;
+    if(_g1SelPT.size>0&&!_g1SelPT.has(r.nguoipt)) return false;
+    return true;
+  });
+  const showEl=document.getElementById('g1-show');
+  const totEl=document.getElementById('g1-total');
+  if(showEl) showEl.textContent=_g1Filtered.length;
+  if(totEl)  totEl.textContent=_g1List.length;
+  _renderG1Rows(_g1Filtered);
+}
+
+function resetG1Filters(){
+  _g1SelLV.clear(); _g1SelPT.clear();
+  ['drop-g1-lv','drop-g1-pt'].forEach(id=>{
+    document.querySelectorAll('#'+id+' input[type=checkbox]').forEach(c=>{c.checked=false;});
+  });
+  const ll=document.getElementById('drop-g1-lv-label');
+  const lp=document.getElementById('drop-g1-pt-label');
+  if(ll) ll.textContent='Tất cả';
+  if(lp) lp.textContent='Tất cả';
+  const ht=document.getElementById('g1-ht');
+  if(ht) ht.value='';
+  applyG1Filters();
+}
+
+function _renderG1Rows(list){
+  const subEl=document.getElementById('g1-sub');
+  if(subEl) subEl.textContent='— '+_g1List.length+' gói thầu chưa phát hành HSMT';
+  const tb=document.getElementById('g1-tbody');
+  tb.innerHTML='';
+  if(!list.length){
+    tb.innerHTML='<tr><td colspan="9" style="text-align:center;padding:28px;color:#999">Không có gói thầu nào phù hợp bộ lọc</td></tr>';
+    return;
+  }
+  list.forEach((r,i)=>{
+    const htD=htDisplay(r.ht);
+    const tvD=tvDisplay(r.tvNum);
+    const lvHtml=buildLvHtml(r.lvAll);
+    const tr=document.createElement('tr');
+    tr.innerHTML=
+      '<td style="text-align:center;color:#aaa;font-size:11px">'+(i+1)+'</td>'+
+      '<td style="font-size:11px;color:#555;word-break:break-all;min-width:110px" title="'+escH(r.mact)+'">'+escH(r.mact)+'</td>'+
+      '<td style="white-space:nowrap;min-width:90px">'+escH(r.nguoipt||'—')+'</td>'+
+      '<td style="min-width:180px;max-width:240px" title="'+escH(r.tenct)+'">'+escH(r.tenct||'—')+'</td>'+
+      '<td style="white-space:nowrap"><span class="'+htD.cls+'">'+escH(htD.txt)+'</span></td>'+
+      '<td style="white-space:nowrap;font-size:11px;color:#444">'+escH(r.linhvuc||'—')+'</td>'+
+      '<td style="white-space:nowrap;font-size:11px;color:#555;text-align:right;min-width:100px">'+(function(){const f=fmtKhaiToan(r.khaitoan);return f==='—'?'<span style="color:#ccc">—</span>':escH(f);})()+'</td>'+
+      '<td class="lv-cell">'+lvHtml+'</td>'+
+      '<td style="white-space:nowrap;text-align:center"><span class="'+tvD.cls+'">'+tvD.txt+'</span></td>';
+    tb.appendChild(tr);
+  });
+  setTimeout(updateScrollBar,50);
+}
+
+function renderG1Table(){
+  buildG1Filters();
+  applyG1Filters();
+}
+
+// ================================================================
 // G2 FILTERS – MULTI-SELECT CHECKBOX DROPDOWN
 // ================================================================
+let _g1List=[], _g1Filtered=[];
+let _g1SelLV=new Set(), _g1SelPT=new Set();
 let _g2List=[], _g2Filtered=[];
 let _g2SelLV=new Set(), _g2SelPT=new Set();
 
@@ -1449,7 +1603,9 @@ function _dropChg(dropId){
   const panel=document.getElementById(dropId);
   if(!panel) return;
   let selSet;
-  if(dropId==='drop-g2-lv') selSet=_g2SelLV;
+  if(dropId==='drop-g1-lv') selSet=_g1SelLV;
+  else if(dropId==='drop-g1-pt') selSet=_g1SelPT;
+  else if(dropId==='drop-g2-lv') selSet=_g2SelLV;
   else if(dropId==='drop-g2-pt') selSet=_g2SelPT;
   else if(dropId==='drop-ht-lv') selSet=_htSelLV;
   else if(dropId==='drop-ht-pt') selSet=_htSelPT;
@@ -1465,6 +1621,7 @@ function _dropChg(dropId){
     else lbl.textContent=selSet.size+' đã chọn';
   }
   if(dropId.startsWith('drop-ht-')) applyHTFilters();
+  else if(dropId.startsWith('drop-g1-')) applyG1Filters();
   else applyG2Filters();
 }
 
@@ -1743,20 +1900,23 @@ function renderHTTable(){
 // ================================================================
 function switchTab(name){
   document.querySelectorAll('.tab-btn').forEach((b,i)=>{
-    b.classList.toggle('active',(name==='main'&&i===0)||(name==='g2'&&i===1)||(name==='warn'&&i===2)||(name==='ht'&&i===3));
+    b.classList.toggle('active',(name==='main'&&i===0)||(name==='g1'&&i===1)||(name==='g2'&&i===2)||(name==='warn'&&i===3)||(name==='ht'&&i===4));
   });
   document.getElementById('tab-main').classList.toggle('active',name==='main');
+  document.getElementById('tab-g1').classList.toggle('active',name==='g1');
   document.getElementById('tab-g2').classList.toggle('active',name==='g2');
   document.getElementById('tab-warn').classList.toggle('active',name==='warn');
   document.getElementById('tab-ht').classList.toggle('active',name==='ht');
   // sync mobile nav
   document.getElementById('mnb-main')?.classList.toggle('active',name==='main');
+  document.getElementById('mnb-g1')?.classList.toggle('active',name==='g1');
   document.getElementById('mnb-g2')?.classList.toggle('active',name==='g2');
   document.getElementById('mnb-warn')?.classList.toggle('active',name==='warn');
   document.getElementById('mnb-ht')?.classList.toggle('active',name==='ht');
   // Cập nhật sticky scroll bar sang bảng đang xem
   let wrap=null;
   if(name==='warn') wrap=document.querySelector('#tab-warn .table-wrap,.warn-wrap .table-scroll');
+  else if(name==='g1') wrap=document.querySelector('#tab-g1 .g1-wrap .table-scroll');
   else if(name==='g2') wrap=document.querySelector('#tab-g2 .g2-wrap .table-scroll');
   else if(name==='ht') wrap=document.querySelector('#tab-ht .ht-wrap .table-scroll');
   else wrap=document.querySelector('#tab-main .table-wrap');
@@ -1776,17 +1936,17 @@ function mobNav(name){
 // PRINT
 // ================================================================
 function printReport(){
-  // Trước khi in: đảm bảo cả 4 tab đều hiển thị
-  document.getElementById('tab-main').style.display='block';
-  document.getElementById('tab-g2').style.display='block';
-  document.getElementById('tab-warn').style.display='block';
-  document.getElementById('tab-ht').style.display='block';
+  // Trước khi in: đảm bảo cả 5 tab đều hiển thị
+  ['tab-main','tab-g1','tab-g2','tab-warn','tab-ht'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.style.display='block';
+  });
   window.print();
   // Sau khi in: khôi phục
-  document.getElementById('tab-main').style.display='';
-  document.getElementById('tab-g2').style.display='';
-  document.getElementById('tab-warn').style.display='';
-  document.getElementById('tab-ht').style.display='';
+  ['tab-main','tab-g1','tab-g2','tab-warn','tab-ht'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.style.display='';
+  });
 }
 
 // ================================================================
