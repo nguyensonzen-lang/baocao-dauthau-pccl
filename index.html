@@ -1499,8 +1499,9 @@ function renderWarnTable(){
 // G1 FILTERS & RENDER – Chưa phát hành HSMT
 // ================================================================
 function buildG1Filters(){
+  const _G1_HT_OK=new Set(['Đấu thầu rộng rãi','Chỉ định thầu','Chào hàng cạnh tranh','Mua sắm trực tiếp']);
   _g1List=allData
-    .filter(r=>!isHTU(r.ht)&&r.gd.code==='g1')
+    .filter(r=>r.gd.code==='g1'&&_G1_HT_OK.has(r.ht))
     .sort((a,b)=>a.mact.localeCompare(b.mact,'vi'));
   const lvs=[...new Set(_g1List.map(r=>r.linhvuc).filter(Boolean))].sort();
   _buildDropList('drop-g1-lv',lvs,_g1SelLV);
