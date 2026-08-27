@@ -1372,7 +1372,7 @@ function updateKPI(){
   // KPI 4: G2 (Đã PH – Chưa đóng) – chỉ ĐT/CĐT
   const g2Cnt =allData.filter(r=>!isHTU(r.ht)&&r.gd.code==='g2').length;
   // KPI 5: G1 chỉ ĐT/CĐT (không tính Tự TH)
-  const g1Cnt =allData.filter(r=>!isHTU(r.ht)&&r.gd.code==='g1').length;
+  const g1Cnt =allData.filter(r=>r.gd.code==='g1'&&_G1_HT_OK.has(r.ht)).length;
   const tvW   =allData.filter(r=>r.tvNum!==null&&r.tvNum>20).length;
 
   document.getElementById('kpi-total').textContent  =total;
@@ -1392,7 +1392,7 @@ function updateKPI(){
   const tuQH=allData.filter(r=>isHTU(r.ht)&&r.trangthai==='Quá hạn').length;
   document.getElementById('kpi-tu-sub').textContent=(tuCnt-tuQH)+' đang xử lý, '+tuQH+' quá hạn';
 
-  const dtG1=allData.filter(r=>!isHTU(r.ht)&&r.gd.code==='g1').length;
+  const dtG1=allData.filter(r=>r.gd.code==='g1'&&_G1_HT_OK.has(r.ht)).length;
   const dtG2=allData.filter(r=>!isHTU(r.ht)&&r.gd.code==='g2').length;
   const dtG3=allData.filter(r=>!isHTU(r.ht)&&r.gd.code==='g3').length;
   document.getElementById('kpi-dt-sub').textContent='G1:'+dtG1+' / G2:'+dtG2+' / G3:'+dtG3;
@@ -1419,7 +1419,7 @@ function updateDist(){
     '<div class="dist-note">Chuẩn bị / trình duyệt hồ sơ nội bộ</div>';
 
   // ĐT/CĐT: phân theo G1/G2/G3
-  const dtG1=allData.filter(r=>!isHTU(r.ht)&&r.gd.code==='g1').length;
+  const dtG1=allData.filter(r=>r.gd.code==='g1'&&_G1_HT_OK.has(r.ht)).length;
   const dtG2=allData.filter(r=>!isHTU(r.ht)&&r.gd.code==='g2').length;
   const dtG3=allData.filter(r=>!isHTU(r.ht)&&r.gd.code==='g3').length;
   const dtMx=Math.max(dtG1,dtG2,dtG3,1);
@@ -1499,7 +1499,6 @@ function renderWarnTable(){
 // G1 FILTERS & RENDER – Chưa phát hành HSMT
 // ================================================================
 function buildG1Filters(){
-  const _G1_HT_OK=new Set(['Đấu thầu rộng rãi','Chỉ định thầu','Chào hàng cạnh tranh','Mua sắm trực tiếp']);
   _g1List=allData
     .filter(r=>r.gd.code==='g1'&&_G1_HT_OK.has(r.ht))
     .sort((a,b)=>a.mact.localeCompare(b.mact,'vi'));
@@ -1579,6 +1578,7 @@ function renderG1Table(){
 // ================================================================
 // G2 FILTERS – MULTI-SELECT CHECKBOX DROPDOWN
 // ================================================================
+const _G1_HT_OK=new Set(['Đấu thầu rộng rãi','Chỉ định thầu','Chào hàng cạnh tranh','Mua sắm trực tiếp']);
 let _g1List=[], _g1Filtered=[];
 let _g1SelLV=new Set(), _g1SelPT=new Set();
 let _g2List=[], _g2Filtered=[];
@@ -2020,5 +2020,6 @@ function initScrollBar(){
 
 </body>
 </html>
+
 
 
