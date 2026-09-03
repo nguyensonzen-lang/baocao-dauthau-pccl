@@ -177,6 +177,8 @@ tbody td:first-child{text-align:center;color:#aaa;font-size:11px;vertical-align:
 .g1-filter-bar label{font-size:12px;color:#555;font-weight:500;white-space:nowrap}
 .g1-filter-bar select{border:1px solid #80deea;border-radius:6px;padding:4px 8px;font-size:12px;color:#333;background:#e0f7fa;outline:none;cursor:pointer}
 .btn-reset-g1{background:#e0f7fa;border:none;border-radius:6px;padding:5px 12px;font-size:12px;color:#006064;cursor:pointer;font-weight:600}
+.btn-excel{background:#217346;border:none;border-radius:6px;padding:5px 12px;font-size:12px;color:#fff;cursor:pointer;font-weight:600;white-space:nowrap;margin-left:4px}
+.btn-excel:hover{background:#1a5c37}
 .g1-wrap{background:#fff;border-radius:0 10px 10px 10px;margin:0 20px 20px;box-shadow:0 1px 4px rgba(0,0,0,.08);overflow:hidden;border:1px solid #80deea}
 .g1-header-row{background:#e0f7fa;padding:12px 18px;display:flex;align-items:center;gap:8px;border-bottom:2px solid #80deea}
 .g1-header-row .g1h-title{font-size:13px;font-weight:700;color:#006064}
@@ -318,7 +320,7 @@ tbody td:first-child{text-align:center;color:#aaa;font-size:11px;vertical-align:
   @page{size:A4 landscape;margin:8mm 7mm}
 
   body{background:#fff!important;font-size:8pt;margin:0;padding:0}
-  #loading,.print-btn-wrap,.mob-nav,.tabs-row,.filter-bar,.g2-filter-bar,.ht-filter-bar,.g1-filter-bar,.btn-reset,.btn-reset-g2,.btn-reset-ht,.btn-reset-g1,.footer,
+  #loading,.print-btn-wrap,.mob-nav,.tabs-row,.filter-bar,.g2-filter-bar,.ht-filter-bar,.g1-filter-bar,.btn-reset,.btn-reset-g2,.btn-reset-ht,.btn-reset-g1,.btn-excel,.footer,
   .table-scroll::after{display:none!important}
   #main{display:block!important}
 
@@ -422,24 +424,39 @@ tbody td:first-child{text-align:center;color:#aaa;font-size:11px;vertical-align:
   .tv-bar-wrap{flex-direction:column!important;gap:2px!important}
   .tv-bar-bg{display:none!important}
 
-  /* HIỆN CẢ 3 TAB KHI IN */
-  .tab-panel{display:block!important}
-  /* G2 TABLE – trang mới */
-  .tab-panel#tab-g2{page-break-before:always!important;margin-top:4mm!important}
-  .tab-panel#tab-g2::before{
+  /* IN THEO TAB ĐANG ACTIVE */
+  body:not([data-pt]) .tab-panel,
+  body[data-pt="main"] .tab-panel{display:block!important}
+  body:not([data-pt]) .tab-panel#tab-g2,
+  body[data-pt="main"] .tab-panel#tab-g2{page-break-before:always!important;margin-top:4mm!important}
+  body:not([data-pt]) .tab-panel#tab-g2::before,
+  body[data-pt="main"] .tab-panel#tab-g2::before{
     content:"📅  ĐÃ PH HSMT – CHƯA ĐÓNG THẦU";
     display:block!important;font-size:10pt!important;font-weight:700;color:#00695c;
     padding:5px 10px;margin:0 8px 5px;border-left:4px solid #00796b;
     background:#e0f2f1;border-radius:2px
   }
-  /* Sang trang mới trước bảng cảnh báo */
-  .tab-panel#tab-warn{page-break-before:always!important;margin-top:4mm!important}
-  .tab-panel#tab-warn::before{
+  body:not([data-pt]) .tab-panel#tab-warn,
+  body[data-pt="main"] .tab-panel#tab-warn{page-break-before:always!important;margin-top:4mm!important}
+  body:not([data-pt]) .tab-panel#tab-warn::before,
+  body[data-pt="main"] .tab-panel#tab-warn::before{
     content:"⚠  CẢNH BÁO: GÓI THẦU TRUNG VỊ > 20 NGÀY";
     display:block!important;font-size:10pt!important;font-weight:700;color:#e65100;
     padding:5px 10px;margin:0 8px 5px;border-left:4px solid #e65100;
     background:#fff3e0;border-radius:2px
   }
+  body[data-pt="g1"] #tab-g1,body[data-pt="g2"] #tab-g2,
+  body[data-pt="warn"] #tab-warn,body[data-pt="ht"] #tab-ht{display:block!important}
+  body[data-pt="g1"] .kpi-row,body[data-pt="g1"] .dist-section,
+  body[data-pt="g2"] .kpi-row,body[data-pt="g2"] .dist-section,
+  body[data-pt="warn"] .kpi-row,body[data-pt="warn"] .dist-section,
+  body[data-pt="ht"] .kpi-row,body[data-pt="ht"] .dist-section{display:none!important}
+  body[data-pt="g1"] #tab-g1,body[data-pt="g2"] #tab-g2,
+  body[data-pt="warn"] #tab-warn,body[data-pt="ht"] #tab-ht{page-break-before:auto!important;margin-top:0!important}
+  body[data-pt="g1"] #tab-g1::before{content:"📂  CHƯA PHÁT HÀNH HỒ SƠ MỜI THẦU (HSMT)";display:block!important;font-size:10pt!important;font-weight:700;color:#00838f;padding:5px 10px;margin:0 8px 5px;border-left:4px solid #00838f;background:#e0f7fa;border-radius:2px}
+  body[data-pt="g2"] #tab-g2::before{content:"📅  ĐÃ PH HSMT – CHƯA ĐÓNG THẦU";display:block!important;font-size:10pt!important;font-weight:700;color:#00695c;padding:5px 10px;margin:0 8px 5px;border-left:4px solid #00796b;background:#e0f2f1;border-radius:2px}
+  body[data-pt="warn"] #tab-warn::before{content:"⚠  CẢNH BÁO: GÓI THẦU TRUNG VỊ > 20 NGÀY";display:block!important;font-size:10pt!important;font-weight:700;color:#e65100;padding:5px 10px;margin:0 8px 5px;border-left:4px solid #e65100;background:#fff3e0;border-radius:2px}
+  body[data-pt="ht"] #tab-ht::before{content:"✅  DANH SÁCH GÓI THẦU ĐÃ HOÀN THÀNH";display:block!important;font-size:10pt!important;font-weight:700;color:#1b5e20;padding:5px 10px;margin:0 8px 5px;border-left:4px solid #2e7d32;background:#e8f5e9;border-radius:2px}
   /* G2 TABLE print widths (14 cột) */
   .g2-wrap{margin:0 8px 6px!important;box-shadow:none!important;border:1px solid #b2dfdb!important;border-radius:4px!important;overflow:visible!important}
   .g2-header-row{padding:6px 10px!important}
@@ -467,16 +484,16 @@ tbody td:first-child{text-align:center;color:#aaa;font-size:11px;vertical-align:
   tbody tr{page-break-inside:avoid}
   .filter-count{display:flex!important}
 
-  /* G1 TABLE – trang mới */
-  .tab-panel#tab-g1{page-break-before:always!important;margin-top:4mm!important}
-  .tab-panel#tab-g1::before{content:"CHUA PH HSMT";display:block!important;font-size:10pt!important;font-weight:700;color:#00838f;padding:5px 10px;margin:0 8px 5mm;border-left:4px solid #00838f;background:#e0f7fa;border-radius:2px}
+  /* G1 TABLE – trang mới (main tab) */
+  body:not([data-pt]) .tab-panel#tab-g1,body[data-pt="main"] .tab-panel#tab-g1{page-break-before:always!important;margin-top:4mm!important}
+  body:not([data-pt]) .tab-panel#tab-g1::before,body[data-pt="main"] .tab-panel#tab-g1::before{content:"CHUA PH HSMT";display:block!important;font-size:10pt!important;font-weight:700;color:#00838f;padding:5px 10px;margin:0 8px 5mm;border-left:4px solid #00838f;background:#e0f7fa;border-radius:2px}
   .g1-wrap{margin:0 8px 6mm!important;box-shadow:none!important;border:1px solid #80deea!important;border-radius:4px!important;overflow:visible!important}
   .g1-table{width:100%!important;min-width:unset!important;table-layout:fixed!important;border-collapse:collapse!important;font-size:7.5pt!important}
   .g1-table th,.g1-table td{padding:4px 5px!important;border:0.5pt solid #b2ebf2!important}
   .g1-table th{background:#e0f7fa!important;font-size:7pt!important}
-  /* HT TABLE – trang mới */
-  .tab-panel#tab-ht{page-break-before:always!important;margin-top:4mm!important}
-  .tab-panel#tab-ht::before{
+  /* HT TABLE – trang mới (main tab) */
+  body:not([data-pt]) .tab-panel#tab-ht,body[data-pt="main"] .tab-panel#tab-ht{page-break-before:always!important;margin-top:4mm!important}
+  body:not([data-pt]) .tab-panel#tab-ht::before,body[data-pt="main"] .tab-panel#tab-ht::before{
     content:"✅  DANH SÁCH GÓI THẦU ĐÃ HOÀN THÀNH";
     display:block!important;font-size:10pt!important;font-weight:700;color:#1b5e20;
     padding:5px 10px;margin:0 8px 5px;border-left:4px solid #2e7d32;
@@ -700,6 +717,7 @@ tbody td:first-child{text-align:center;color:#aaa;font-size:11px;vertical-align:
         <div class="multi-drop-panel" id="drop-g1-pt"></div>
       </div>
       <button class="btn-reset-g1" onclick="resetG1Filters()">↺ Reset</button>
+      <button class="btn-excel" onclick="exportExcelG1()" title="Xuất Excel dữ liệu đang hiển thị">⬇ Xuất Excel</button>
       <span class="filter-count">Hiển thị: <strong id="g1-show">0</strong> / <strong id="g1-total">0</strong></span>
     </div>
     <div class="g1-wrap">
@@ -732,6 +750,7 @@ tbody td:first-child{text-align:center;color:#aaa;font-size:11px;vertical-align:
       <div class="warn-header-row">
         <span class="wh-title">⚠ Gói thầu có Trung vị &gt;20 ngày</span>
         <span class="wh-sub" id="warn-sub"></span>
+        <button class="btn-excel" onclick="exportExcelWarn()" title="Xuất Excel toàn bộ cảnh báo" style="margin-left:auto">⬇ Xuất Excel</button>
       </div>
       <div class="table-scroll">
         <table class="warn-table">
@@ -780,6 +799,7 @@ tbody td:first-child{text-align:center;color:#aaa;font-size:11px;vertical-align:
         <div class="multi-drop-panel" id="drop-g2-pt"></div>
       </div>
       <button class="btn-reset-g2" onclick="resetG2Filters()">↺ Reset</button>
+      <button class="btn-excel" onclick="exportExcelG2()" title="Xuất Excel dữ liệu đang hiển thị">⬇ Xuất Excel</button>
       <span class="filter-count">Hiển thị: <strong id="g2-show">0</strong> / <strong id="g2-total">0</strong></span>
     </div>
     <div class="g2-wrap">
@@ -2020,6 +2040,7 @@ function initScrollBar(){
 
 </body>
 </html>
+
 
 
 
