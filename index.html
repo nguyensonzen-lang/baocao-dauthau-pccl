@@ -173,12 +173,16 @@ tbody td:first-child{text-align:center;color:#aaa;font-size:11px;vertical-align:
 #tab-warn .warn-wrap{border:2px solid #e65100;border-top:4px solid #e65100;box-shadow:0 3px 14px rgba(230,81,0,.14)}
 #tab-ht .ht-wrap{border:2px solid #2e7d32;border-top:4px solid #2e7d32;box-shadow:0 3px 14px rgba(46,125,50,.14)}
 #tab-g1 .g1-wrap{border:2px solid #00838f;border-top:4px solid #00838f;box-shadow:0 3px 14px rgba(0,131,143,.14)}
+
+/* G1 FILTER BAR – Chưa PH HSMT */
 .g1-filter-bar{background:#fff;margin:0 20px 0;padding:10px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;border:2px solid #00838f;border-top:none;border-bottom:none}
 .g1-filter-bar label{font-size:12px;color:#555;font-weight:500;white-space:nowrap}
 .g1-filter-bar select{border:1px solid #80deea;border-radius:6px;padding:4px 8px;font-size:12px;color:#333;background:#e0f7fa;outline:none;cursor:pointer}
 .btn-reset-g1{background:#e0f7fa;border:none;border-radius:6px;padding:5px 12px;font-size:12px;color:#006064;cursor:pointer;font-weight:600}
 .btn-excel{background:#217346;border:none;border-radius:6px;padding:5px 12px;font-size:12px;color:#fff;cursor:pointer;font-weight:600;white-space:nowrap;margin-left:4px}
 .btn-excel:hover{background:#1a5c37}
+
+/* G1 TABLE */
 .g1-wrap{background:#fff;border-radius:0 10px 10px 10px;margin:0 20px 20px;box-shadow:0 1px 4px rgba(0,0,0,.08);overflow:hidden;border:1px solid #80deea}
 .g1-header-row{background:#e0f7fa;padding:12px 18px;display:flex;align-items:center;gap:8px;border-bottom:2px solid #80deea}
 .g1-header-row .g1h-title{font-size:13px;font-weight:700;color:#006064}
@@ -187,6 +191,7 @@ tbody td:first-child{text-align:center;color:#aaa;font-size:11px;vertical-align:
 .g1-table th{background:#e0f7fa;padding:9px 10px;text-align:left;font-weight:700;color:#006064;font-size:11px;border-bottom:2px solid #80deea;white-space:nowrap;position:sticky;top:0;z-index:2}
 .g1-table td{padding:8px 10px;border-bottom:1px solid #e0f7fa;vertical-align:top;color:#333}
 .g1-table tr:hover td{background:#f0fdfd}
+
 /* HT FILTER BAR */
 .ht-filter-bar{background:#fff;margin:0 20px 0;padding:10px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;border:2px solid #2e7d32;border-top:none;border-bottom:none}
 .ht-filter-bar label{font-size:12px;color:#555;font-weight:500;white-space:nowrap}
@@ -424,9 +429,17 @@ tbody td:first-child{text-align:center;color:#aaa;font-size:11px;vertical-align:
   .tv-bar-wrap{flex-direction:column!important;gap:2px!important}
   .tv-bar-bg{display:none!important}
 
-  /* IN THEO TAB ĐANG ACTIVE */
+  /* ===============================================================
+     IN THEO TAB ĐANG ACTIVE
+     - Nếu in từ tab chính (main): hiện tất cả tab (hành vi cũ)
+     - Nếu in từ tab phụ (g1/g2/warn/ht): chỉ hiện tab đó + header
+     =============================================================== */
+
+  /* DEFAULT / MAIN: hiện tất cả tab */
   body:not([data-pt]) .tab-panel,
   body[data-pt="main"] .tab-panel{display:block!important}
+
+  /* G2 – trang mới khi in tất cả */
   body:not([data-pt]) .tab-panel#tab-g2,
   body[data-pt="main"] .tab-panel#tab-g2{page-break-before:always!important;margin-top:4mm!important}
   body:not([data-pt]) .tab-panel#tab-g2::before,
@@ -436,6 +449,7 @@ tbody td:first-child{text-align:center;color:#aaa;font-size:11px;vertical-align:
     padding:5px 10px;margin:0 8px 5px;border-left:4px solid #00796b;
     background:#e0f2f1;border-radius:2px
   }
+  /* Warn – trang mới khi in tất cả */
   body:not([data-pt]) .tab-panel#tab-warn,
   body[data-pt="main"] .tab-panel#tab-warn{page-break-before:always!important;margin-top:4mm!important}
   body:not([data-pt]) .tab-panel#tab-warn::before,
@@ -445,18 +459,50 @@ tbody td:first-child{text-align:center;color:#aaa;font-size:11px;vertical-align:
     padding:5px 10px;margin:0 8px 5px;border-left:4px solid #e65100;
     background:#fff3e0;border-radius:2px
   }
-  body[data-pt="g1"] #tab-g1,body[data-pt="g2"] #tab-g2,
-  body[data-pt="warn"] #tab-warn,body[data-pt="ht"] #tab-ht{display:block!important}
+
+  /* TAB ĐƠN: chỉ hiện tab đang active */
+  body[data-pt="g1"] #tab-g1,
+  body[data-pt="g2"] #tab-g2,
+  body[data-pt="warn"] #tab-warn,
+  body[data-pt="ht"] #tab-ht{display:block!important}
+
+  /* Ẩn KPI + Distribution khi in tab đơn */
   body[data-pt="g1"] .kpi-row,body[data-pt="g1"] .dist-section,
   body[data-pt="g2"] .kpi-row,body[data-pt="g2"] .dist-section,
   body[data-pt="warn"] .kpi-row,body[data-pt="warn"] .dist-section,
   body[data-pt="ht"] .kpi-row,body[data-pt="ht"] .dist-section{display:none!important}
-  body[data-pt="g1"] #tab-g1,body[data-pt="g2"] #tab-g2,
-  body[data-pt="warn"] #tab-warn,body[data-pt="ht"] #tab-ht{page-break-before:auto!important;margin-top:0!important}
-  body[data-pt="g1"] #tab-g1::before{content:"📂  CHƯA PHÁT HÀNH HỒ SƠ MỜI THẦU (HSMT)";display:block!important;font-size:10pt!important;font-weight:700;color:#00838f;padding:5px 10px;margin:0 8px 5px;border-left:4px solid #00838f;background:#e0f7fa;border-radius:2px}
-  body[data-pt="g2"] #tab-g2::before{content:"📅  ĐÃ PH HSMT – CHƯA ĐÓNG THẦU";display:block!important;font-size:10pt!important;font-weight:700;color:#00695c;padding:5px 10px;margin:0 8px 5px;border-left:4px solid #00796b;background:#e0f2f1;border-radius:2px}
-  body[data-pt="warn"] #tab-warn::before{content:"⚠  CẢNH BÁO: GÓI THẦU TRUNG VỊ > 20 NGÀY";display:block!important;font-size:10pt!important;font-weight:700;color:#e65100;padding:5px 10px;margin:0 8px 5px;border-left:4px solid #e65100;background:#fff3e0;border-radius:2px}
-  body[data-pt="ht"] #tab-ht::before{content:"✅  DANH SÁCH GÓI THẦU ĐÃ HOÀN THÀNH";display:block!important;font-size:10pt!important;font-weight:700;color:#1b5e20;padding:5px 10px;margin:0 8px 5px;border-left:4px solid #2e7d32;background:#e8f5e9;border-radius:2px}
+
+  /* Không page-break khi in tab đơn */
+  body[data-pt="g1"] #tab-g1,
+  body[data-pt="g2"] #tab-g2,
+  body[data-pt="warn"] #tab-warn,
+  body[data-pt="ht"] #tab-ht{page-break-before:auto!important;margin-top:0!important}
+
+  /* Nhãn tiêu đề tab khi in đơn */
+  body[data-pt="g1"] #tab-g1::before{
+    content:"📂  CHƯA PHÁT HÀNH HỒ SƠ MỜI THẦU (HSMT)";
+    display:block!important;font-size:10pt!important;font-weight:700;color:#00838f;
+    padding:5px 10px;margin:0 8px 5px;border-left:4px solid #00838f;
+    background:#e0f7fa;border-radius:2px
+  }
+  body[data-pt="g2"] #tab-g2::before{
+    content:"📅  ĐÃ PH HSMT – CHƯA ĐÓNG THẦU";
+    display:block!important;font-size:10pt!important;font-weight:700;color:#00695c;
+    padding:5px 10px;margin:0 8px 5px;border-left:4px solid #00796b;
+    background:#e0f2f1;border-radius:2px
+  }
+  body[data-pt="warn"] #tab-warn::before{
+    content:"⚠  CẢNH BÁO: GÓI THẦU TRUNG VỊ > 20 NGÀY";
+    display:block!important;font-size:10pt!important;font-weight:700;color:#e65100;
+    padding:5px 10px;margin:0 8px 5px;border-left:4px solid #e65100;
+    background:#fff3e0;border-radius:2px
+  }
+  body[data-pt="ht"] #tab-ht::before{
+    content:"✅  DANH SÁCH GÓI THẦU ĐÃ HOÀN THÀNH";
+    display:block!important;font-size:10pt!important;font-weight:700;color:#1b5e20;
+    padding:5px 10px;margin:0 8px 5px;border-left:4px solid #2e7d32;
+    background:#e8f5e9;border-radius:2px
+  }
   /* G2 TABLE print widths (14 cột) */
   .g2-wrap{margin:0 8px 6px!important;box-shadow:none!important;border:1px solid #b2dfdb!important;border-radius:4px!important;overflow:visible!important}
   .g2-header-row{padding:6px 10px!important}
@@ -484,16 +530,29 @@ tbody td:first-child{text-align:center;color:#aaa;font-size:11px;vertical-align:
   tbody tr{page-break-inside:avoid}
   .filter-count{display:flex!important}
 
-  /* G1 TABLE – trang mới (main tab) */
-  body:not([data-pt]) .tab-panel#tab-g1,body[data-pt="main"] .tab-panel#tab-g1{page-break-before:always!important;margin-top:4mm!important}
-  body:not([data-pt]) .tab-panel#tab-g1::before,body[data-pt="main"] .tab-panel#tab-g1::before{content:"CHUA PH HSMT";display:block!important;font-size:10pt!important;font-weight:700;color:#00838f;padding:5px 10px;margin:0 8px 5mm;border-left:4px solid #00838f;background:#e0f7fa;border-radius:2px}
+  /* G1 TABLE – trang mới khi in tất cả (main tab) */
+  body:not([data-pt]) .tab-panel#tab-g1,
+  body[data-pt="main"] .tab-panel#tab-g1{page-break-before:always!important;margin-top:4mm!important}
+  body:not([data-pt]) .tab-panel#tab-g1::before,
+  body[data-pt="main"] .tab-panel#tab-g1::before{
+    content:"📂  CHƯA PHÁT HÀNH HỒ SƠ MỜI THẦU (HSMT)";
+    display:block!important;font-size:10pt!important;font-weight:700;color:#00838f;
+    padding:5px 10px;margin:0 8px 5mm;border-left:4px solid #00838f;
+    background:#e0f7fa;border-radius:2px
+  }
   .g1-wrap{margin:0 8px 6mm!important;box-shadow:none!important;border:1px solid #80deea!important;border-radius:4px!important;overflow:visible!important}
+  .g1-header-row{padding:6px 10px!important}
+  .g1h-title{font-size:9pt!important}
   .g1-table{width:100%!important;min-width:unset!important;table-layout:fixed!important;border-collapse:collapse!important;font-size:7.5pt!important}
   .g1-table th,.g1-table td{padding:4px 5px!important;border:0.5pt solid #b2ebf2!important}
   .g1-table th{background:#e0f7fa!important;font-size:7pt!important}
-  /* HT TABLE – trang mới (main tab) */
-  body:not([data-pt]) .tab-panel#tab-ht,body[data-pt="main"] .tab-panel#tab-ht{page-break-before:always!important;margin-top:4mm!important}
-  body:not([data-pt]) .tab-panel#tab-ht::before,body[data-pt="main"] .tab-panel#tab-ht::before{
+  .g1-table tbody tr:nth-child(even){background:#f0fdfd!important}
+
+  /* HT TABLE – trang mới khi in tất cả (main tab) */
+  body:not([data-pt]) .tab-panel#tab-ht,
+  body[data-pt="main"] .tab-panel#tab-ht{page-break-before:always!important;margin-top:4mm!important}
+  body:not([data-pt]) .tab-panel#tab-ht::before,
+  body[data-pt="main"] .tab-panel#tab-ht::before{
     content:"✅  DANH SÁCH GÓI THẦU ĐÃ HOÀN THÀNH";
     display:block!important;font-size:10pt!important;font-weight:700;color:#1b5e20;
     padding:5px 10px;margin:0 8px 5px;border-left:4px solid #2e7d32;
@@ -696,8 +755,7 @@ tbody td:first-child{text-align:center;color:#aaa;font-size:11px;vertical-align:
     </div>
   </div>
 
-
-  <!-- TAB G1 – CHƯA PH HSMT -->
+  <!-- TAB G1 – CHƯA PHÁT HÀNH HSMT -->
   <div id="tab-g1" class="tab-panel">
     <div class="g1-filter-bar">
       <label>Hình thức:</label>
@@ -708,12 +766,18 @@ tbody td:first-child{text-align:center;color:#aaa;font-size:11px;vertical-align:
       </select>
       <label>Lĩnh vực:</label>
       <div class="multi-drop-wrap">
-        <button class="multi-drop-btn" onclick="toggleDrop('drop-g1-lv',event)" type="button"><span class="drop-label" id="drop-g1-lv-label">Tất cả</span><span class="drop-arrow">▾</span></button>
+        <button class="multi-drop-btn" onclick="toggleDrop('drop-g1-lv',event)" type="button">
+          <span class="drop-label" id="drop-g1-lv-label">Tất cả</span>
+          <span class="drop-arrow">▾</span>
+        </button>
         <div class="multi-drop-panel" id="drop-g1-lv"></div>
       </div>
       <label>Người PT:</label>
       <div class="multi-drop-wrap">
-        <button class="multi-drop-btn" onclick="toggleDrop('drop-g1-pt',event)" type="button"><span class="drop-label" id="drop-g1-pt-label">Tất cả</span><span class="drop-arrow">▾</span></button>
+        <button class="multi-drop-btn" onclick="toggleDrop('drop-g1-pt',event)" type="button">
+          <span class="drop-label" id="drop-g1-pt-label">Tất cả</span>
+          <span class="drop-arrow">▾</span>
+        </button>
         <div class="multi-drop-panel" id="drop-g1-pt"></div>
       </div>
       <button class="btn-reset-g1" onclick="resetG1Filters()">↺ Reset</button>
@@ -738,7 +802,9 @@ tbody td:first-child{text-align:center;color:#aaa;font-size:11px;vertical-align:
             <th style="min-width:160px">Lần LV gần nhất</th>
             <th style="min-width:80px;text-align:center">Trung vị (ngày)</th>
           </tr></thead>
-          <tbody id="g1-tbody"><tr><td colspan="9" style="text-align:center;padding:28px;color:#999">Đang tải...</td></tr></tbody>
+          <tbody id="g1-tbody">
+            <tr><td colspan="9" style="text-align:center;padding:28px;color:#999">Đang tải dữ liệu...</td></tr>
+          </tbody>
         </table>
       </div>
     </div>
@@ -853,6 +919,15 @@ tbody td:first-child{text-align:center;color:#aaa;font-size:11px;vertical-align:
           <span class="drop-arrow">▾</span>
         </button>
         <div class="multi-drop-panel" id="drop-ht-pt"></div>
+      </div>
+      <label>Đơn vị TT:</label>
+      <input type="text" id="ht-search-dvtt" placeholder="Nhập đơn vị trúng thầu..." oninput="applyHTFilters()" style="width:200px">
+      <div class="multi-drop-wrap">
+        <button class="multi-drop-btn" onclick="toggleDrop('drop-ht-dvtt',event)" type="button">
+          <span class="drop-label" id="drop-ht-dvtt-label">Tất cả</span>
+          <span class="drop-arrow">▾</span>
+        </button>
+        <div class="multi-drop-panel" id="drop-ht-dvtt"></div>
       </div>
       <button class="btn-reset-ht" onclick="resetHTFilters()">↺ Reset</button>
       <span class="filter-count">Hiển thị: <strong id="ht-show">0</strong> / <strong id="ht-total">0</strong></span>
@@ -1515,6 +1590,73 @@ function renderWarnTable(){
 }
 
 // ================================================================
+// G1/G2 FILTERS – MULTI-SELECT CHECKBOX DROPDOWN
+// ================================================================
+const _G1_HT_OK=new Set(['Đấu thầu rộng rãi','Chỉ định thầu','Chào hàng cạnh tranh','Mua sắm trực tiếp']);
+let _g1List=[], _g1Filtered=[];
+let _g1SelLV=new Set(), _g1SelPT=new Set();
+let _g2List=[], _g2Filtered=[];
+let _g2SelLV=new Set(), _g2SelPT=new Set();
+
+// Render checkbox list vào panel
+function _buildDropList(dropId, items, selSet){
+  const panel=document.getElementById(dropId);
+  if(!panel) return;
+  panel.innerHTML='';
+  if(!items.length){panel.innerHTML='<div class="multi-drop-item" style="color:#aaa">Không có dữ liệu</div>';return;}
+  items.forEach((v,idx)=>{
+    const d=document.createElement('div');
+    d.className='multi-drop-item';
+    const cid=dropId+'-'+idx;
+    d.innerHTML='<input type="checkbox" id="'+cid+'" value="'+v.replace(/"/g,'&quot;').replace(/'/g,'&#39;')+'" '+(selSet.has(v)?'checked':'')+' onchange="_dropChg(\''+dropId+'\')"> <label for="'+cid+'">'+escH(v)+'</label>';
+    panel.appendChild(d);
+  });
+}
+
+// Khi checkbox thay đổi → cập nhật Set + label + filter
+function _dropChg(dropId){
+  const panel=document.getElementById(dropId);
+  if(!panel) return;
+  let selSet;
+  if(dropId==='drop-g1-lv') selSet=_g1SelLV;
+  else if(dropId==='drop-g1-pt') selSet=_g1SelPT;
+  else if(dropId==='drop-g2-lv') selSet=_g2SelLV;
+  else if(dropId==='drop-g2-pt') selSet=_g2SelPT;
+  else if(dropId==='drop-ht-lv') selSet=_htSelLV;
+  else if(dropId==='drop-ht-pt') selSet=_htSelPT;
+  else if(dropId==='drop-ht-dvtt') selSet=_htSelDVTT;
+  else return;
+  const labelId=dropId+'-label';
+  selSet.clear();
+  panel.querySelectorAll('input[type=checkbox]:checked').forEach(c=>selSet.add(c.value));
+  // Cập nhật label nút
+  const lbl=document.getElementById(labelId);
+  if(lbl){
+    if(selSet.size===0) lbl.textContent='Tất cả';
+    else if(selSet.size===1) lbl.textContent=[...selSet][0];
+    else lbl.textContent=selSet.size+' đã chọn';
+  }
+  if(dropId.startsWith('drop-ht-')) applyHTFilters();
+  else if(dropId.startsWith('drop-g1-')) applyG1Filters();
+  else applyG2Filters();
+}
+
+// Mở / đóng dropdown (đóng tất cả trước khi mở cái được chọn)
+function toggleDrop(id, e){
+  if(e){e.stopPropagation();}
+  const panel=document.getElementById(id);
+  if(!panel) return;
+  const wasOpen=panel.classList.contains('open');
+  document.querySelectorAll('.multi-drop-panel').forEach(p=>p.classList.remove('open'));
+  if(!wasOpen) panel.classList.add('open');
+}
+
+// Đóng khi click ngoài (bỏ qua click bên trong dropdown để giữ panel mở khi tick checkbox)
+document.addEventListener('click',function(e){
+  if(e.target.closest('.multi-drop-wrap')) return;
+  document.querySelectorAll('.multi-drop-panel').forEach(p=>p.classList.remove('open'));
+});
+
 // ================================================================
 // G1 FILTERS & RENDER – Chưa phát hành HSMT
 // ================================================================
@@ -1526,6 +1668,7 @@ function buildG1Filters(){
   _buildDropList('drop-g1-lv',lvs,_g1SelLV);
   const pts=[...new Set(_g1List.map(r=>r.nguoipt).filter(Boolean))].sort();
   _buildDropList('drop-g1-pt',pts,_g1SelPT);
+  // Cập nhật badge
   const t=document.getElementById('tab-g1-cnt');
   if(t) t.textContent=_g1List.length;
   const m=document.getElementById('mob-g1-cnt');
@@ -1594,73 +1737,6 @@ function renderG1Table(){
   buildG1Filters();
   applyG1Filters();
 }
-
-// ================================================================
-// G2 FILTERS – MULTI-SELECT CHECKBOX DROPDOWN
-// ================================================================
-const _G1_HT_OK=new Set(['Đấu thầu rộng rãi','Chỉ định thầu','Chào hàng cạnh tranh','Mua sắm trực tiếp']);
-let _g1List=[], _g1Filtered=[];
-let _g1SelLV=new Set(), _g1SelPT=new Set();
-let _g2List=[], _g2Filtered=[];
-let _g2SelLV=new Set(), _g2SelPT=new Set();
-
-// Render checkbox list vào panel
-function _buildDropList(dropId, items, selSet){
-  const panel=document.getElementById(dropId);
-  if(!panel) return;
-  panel.innerHTML='';
-  if(!items.length){panel.innerHTML='<div class="multi-drop-item" style="color:#aaa">Không có dữ liệu</div>';return;}
-  items.forEach((v,idx)=>{
-    const d=document.createElement('div');
-    d.className='multi-drop-item';
-    const cid=dropId+'-'+idx;
-    d.innerHTML='<input type="checkbox" id="'+cid+'" value="'+v.replace(/"/g,'&quot;').replace(/'/g,'&#39;')+'" '+(selSet.has(v)?'checked':'')+' onchange="_dropChg(\''+dropId+'\')"> <label for="'+cid+'">'+escH(v)+'</label>';
-    panel.appendChild(d);
-  });
-}
-
-// Khi checkbox thay đổi → cập nhật Set + label + filter
-function _dropChg(dropId){
-  const panel=document.getElementById(dropId);
-  if(!panel) return;
-  let selSet;
-  if(dropId==='drop-g1-lv') selSet=_g1SelLV;
-  else if(dropId==='drop-g1-pt') selSet=_g1SelPT;
-  else if(dropId==='drop-g2-lv') selSet=_g2SelLV;
-  else if(dropId==='drop-g2-pt') selSet=_g2SelPT;
-  else if(dropId==='drop-ht-lv') selSet=_htSelLV;
-  else if(dropId==='drop-ht-pt') selSet=_htSelPT;
-  else return;
-  const labelId=dropId+'-label';
-  selSet.clear();
-  panel.querySelectorAll('input[type=checkbox]:checked').forEach(c=>selSet.add(c.value));
-  // Cập nhật label nút
-  const lbl=document.getElementById(labelId);
-  if(lbl){
-    if(selSet.size===0) lbl.textContent='Tất cả';
-    else if(selSet.size===1) lbl.textContent=[...selSet][0];
-    else lbl.textContent=selSet.size+' đã chọn';
-  }
-  if(dropId.startsWith('drop-ht-')) applyHTFilters();
-  else if(dropId.startsWith('drop-g1-')) applyG1Filters();
-  else applyG2Filters();
-}
-
-// Mở / đóng dropdown (đóng tất cả trước khi mở cái được chọn)
-function toggleDrop(id, e){
-  if(e){e.stopPropagation();}
-  const panel=document.getElementById(id);
-  if(!panel) return;
-  const wasOpen=panel.classList.contains('open');
-  document.querySelectorAll('.multi-drop-panel').forEach(p=>p.classList.remove('open'));
-  if(!wasOpen) panel.classList.add('open');
-}
-
-// Đóng khi click ngoài (bỏ qua click bên trong dropdown để giữ panel mở khi tick checkbox)
-document.addEventListener('click',function(e){
-  if(e.target.closest('.multi-drop-wrap')) return;
-  document.querySelectorAll('.multi-drop-panel').forEach(p=>p.classList.remove('open'));
-});
 
 function buildG2Filters(){
   _g2List=allData
@@ -1826,7 +1902,7 @@ function _processHT(resp){
 // HT FILTERS – HOÀN THÀNH
 // ================================================================
 let _htList=[], _htFiltered=[];
-let _htSelLV=new Set(), _htSelPT=new Set();
+let _htSelLV=new Set(), _htSelPT=new Set(), _htSelDVTT=new Set();
 
 function daysHLDisplay(days){
   if(days===null) return {txt:'—',cls:'tv-empty'};
@@ -1846,14 +1922,19 @@ function buildHTFilters(){
   _buildDropList('drop-ht-lv', lvs, _htSelLV);
   const pts=[...new Set(_htList.map(r=>r.nguoipt).filter(Boolean))].sort();
   _buildDropList('drop-ht-pt', pts, _htSelPT);
+  const dvtts=[...new Set(_htList.map(r=>r.dvtrung).filter(Boolean))].sort();
+  _buildDropList('drop-ht-dvtt', dvtts, _htSelDVTT);
 }
 
 function applyHTFilters(){
   const fSR=((document.getElementById('ht-search')||{}).value||'').trim().toLowerCase();
+  const fDVTT=((document.getElementById('ht-search-dvtt')||{}).value||'').trim().toLowerCase();
   _htFiltered=_htList.filter(r=>{
     if(_htSelLV.size>0&&!_htSelLV.has(r.linhvuc)) return false;
     if(_htSelPT.size>0&&!_htSelPT.has(r.nguoipt)) return false;
+    if(_htSelDVTT.size>0&&!_htSelDVTT.has(r.dvtrung)) return false;
     if(fSR&&!(r.tenct||'').toLowerCase().includes(fSR)) return false;
+    if(fDVTT&&!(r.dvtrung||'').toLowerCase().includes(fDVTT)) return false;
     return true;
   });
   const showEl=document.getElementById('ht-show');
@@ -1864,16 +1945,20 @@ function applyHTFilters(){
 }
 
 function resetHTFilters(){
-  _htSelLV.clear(); _htSelPT.clear();
-  ['drop-ht-lv','drop-ht-pt'].forEach(id=>{
+  _htSelLV.clear(); _htSelPT.clear(); _htSelDVTT.clear();
+  ['drop-ht-lv','drop-ht-pt','drop-ht-dvtt'].forEach(id=>{
     document.querySelectorAll('#'+id+' input[type=checkbox]').forEach(c=>{c.checked=false;});
   });
   const ll=document.getElementById('drop-ht-lv-label');
   const lp=document.getElementById('drop-ht-pt-label');
+  const ld=document.getElementById('drop-ht-dvtt-label');
   if(ll) ll.textContent='Tất cả';
   if(lp) lp.textContent='Tất cả';
+  if(ld) ld.textContent='Tất cả';
   const sch=document.getElementById('ht-search');
   if(sch) sch.value='';
+  const schd=document.getElementById('ht-search-dvtt');
+  if(schd) schd.value='';
   applyHTFilters();
 }
 
@@ -1920,25 +2005,24 @@ function renderHTTable(){
 // TAB SWITCH
 // ================================================================
 function switchTab(name){
+  // Tab order: main(0) g1(1) g2(2) warn(3) ht(4)
+  const tabOrder=['main','g1','g2','warn','ht'];
   document.querySelectorAll('.tab-btn').forEach((b,i)=>{
-    b.classList.toggle('active',(name==='main'&&i===0)||(name==='g1'&&i===1)||(name==='g2'&&i===2)||(name==='warn'&&i===3)||(name==='ht'&&i===4));
+    b.classList.toggle('active',tabOrder[i]===name);
   });
-  document.getElementById('tab-main').classList.toggle('active',name==='main');
-  document.getElementById('tab-g1').classList.toggle('active',name==='g1');
-  document.getElementById('tab-g2').classList.toggle('active',name==='g2');
-  document.getElementById('tab-warn').classList.toggle('active',name==='warn');
-  document.getElementById('tab-ht').classList.toggle('active',name==='ht');
+  ['main','g1','g2','warn','ht'].forEach(t=>{
+    const el=document.getElementById('tab-'+t);
+    if(el) el.classList.toggle('active',t===name);
+  });
   // sync mobile nav
-  document.getElementById('mnb-main')?.classList.toggle('active',name==='main');
-  document.getElementById('mnb-g1')?.classList.toggle('active',name==='g1');
-  document.getElementById('mnb-g2')?.classList.toggle('active',name==='g2');
-  document.getElementById('mnb-warn')?.classList.toggle('active',name==='warn');
-  document.getElementById('mnb-ht')?.classList.toggle('active',name==='ht');
+  ['main','g1','g2','warn','ht'].forEach(t=>{
+    document.getElementById('mnb-'+t)?.classList.toggle('active',t===name);
+  });
   // Cập nhật sticky scroll bar sang bảng đang xem
   let wrap=null;
   if(name==='warn') wrap=document.querySelector('#tab-warn .table-wrap,.warn-wrap .table-scroll');
-  else if(name==='g1') wrap=document.querySelector('#tab-g1 .g1-wrap .table-scroll');
   else if(name==='g2') wrap=document.querySelector('#tab-g2 .g2-wrap .table-scroll');
+  else if(name==='g1') wrap=document.querySelector('#tab-g1 .g1-wrap .table-scroll');
   else if(name==='ht') wrap=document.querySelector('#tab-ht .ht-wrap .table-scroll');
   else wrap=document.querySelector('#tab-main .table-wrap');
   if(wrap) setTimeout(()=>setScrollTarget(wrap), 80);
@@ -1954,19 +2038,312 @@ function mobNav(name){
 }
 
 // ================================================================
-// PRINT
+// PRINT – chỉ in tab đang active
 // ================================================================
 function printReport(){
-  // Trước khi in: đảm bảo cả 5 tab đều hiển thị
-  ['tab-main','tab-g1','tab-g2','tab-warn','tab-ht'].forEach(id=>{
-    const el=document.getElementById(id);
-    if(el) el.style.display='block';
+  const active=document.querySelector('.tab-panel.active');
+  const tabName=active?active.id.replace('tab-',''):'main';
+  document.body.setAttribute('data-pt',tabName);
+  window.addEventListener('afterprint',function _ap(){
+    document.body.removeAttribute('data-pt');
+    window.removeEventListener('afterprint',_ap);
   });
   window.print();
-  // Sau khi in: khôi phục
-  ['tab-main','tab-g1','tab-g2','tab-warn','tab-ht'].forEach(id=>{
-    const el=document.getElementById(id);
-    if(el) el.style.display='';
+}
+
+// ================================================================
+// EXCEL EXPORT – dùng SheetJS (lazy load) + Formatting đầy đủ
+// ================================================================
+function _ensureXLSX(cb){
+  if(window.XLSX) return cb();
+  const s=document.createElement('script');
+  s.src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+  s.onload=cb;
+  s.onerror=function(){alert('Không tải được thư viện Excel. Vui lòng kiểm tra kết nối mạng.');};
+  document.head.appendChild(s);
+}
+
+function _lvText(lvAll){
+  if(!lvAll||!lvAll.length) return '';
+  return lvAll.map(e=>(e.dateStr?e.dateStr+': ':'')+e.content).join(' | ');
+}
+
+function _dateTag(){
+  const d=new Date();
+  return d.getFullYear()+('0'+(d.getMonth()+1)).slice(-2)+('0'+d.getDate()).slice(-2);
+}
+
+function _dateDisplay(){
+  const d=new Date();
+  return ('0'+d.getDate()).slice(-2)+'/'+('0'+(d.getMonth()+1)).slice(-2)+'/'+d.getFullYear();
+}
+
+// Helper: encode cell ref
+function _xlR(r,c){return XLSX.utils.encode_cell({r:r,c:c});}
+
+// Helper: set style on cell (create cell if missing)
+function _xlS(ws,r,c,style,val,type){
+  const ref=_xlR(r,c);
+  if(!ws[ref]){
+    if(val!==undefined&&val!==null&&val!=='') ws[ref]={t:type||'s',v:val};
+    else ws[ref]={t:'z',v:''};
+  }
+  ws[ref].s=style;
+}
+
+// Build border helper
+function _brd(colorArgb){
+  const b={style:'thin',color:{argb:colorArgb||'FFCCCCCC'}};
+  return {top:b,bottom:b,left:b,right:b};
+}
+
+// ================================================================
+// Core builder: tạo worksheet có đầy đủ định dạng
+// opts: {title, tabColorHex, count, colDefs, dataRows, sheetName, filename}
+// colDefs: [{label, wch, type:'text'|'num'|'date'|'int'}]
+// dataRows: array of arrays (raw values)
+// ================================================================
+function _buildXlsxSheet(opts){
+  const TC='FF'+opts.tabColorHex;          // tab color ARGB
+  const ZEB='FFF2F2F2';                    // zebra odd-row bg
+  const WHITE='FFFFFFFF';
+  const TXTW='FFFFFFFF';                   // white text
+  const nCols=opts.colDefs.length;
+  const today=_dateDisplay();
+
+  // --- Build row data ---
+  // Row 0: Title
+  // Row 1: Info (date + count)
+  // Row 2: empty spacer
+  // Row 3: Column headers
+  // Row 4+: data
+  const titleRow=new Array(nCols).fill('');  titleRow[0]=opts.title;
+  const infoRow=new Array(nCols).fill('');   infoRow[0]='Xuất ngày: '+today+'     |     Tổng: '+opts.count+' gói thầu';
+  const emptyRow=new Array(nCols).fill('');
+  const headerRow=opts.colDefs.map(d=>d.label);
+  const allRows=[titleRow,infoRow,emptyRow,headerRow,...opts.dataRows];
+
+  const ws=XLSX.utils.aoa_to_sheet(allRows,{cellStyles:true});
+
+  // --- Merge title & info across all columns ---
+  ws['!merges']=[
+    {s:{r:0,c:0},e:{r:0,c:nCols-1}},
+    {s:{r:1,c:0},e:{r:1,c:nCols-1}},
+  ];
+
+  // --- Style row 0: Title ---
+  const sTitleBase={
+    font:{bold:true,sz:13,color:{argb:TXTW},name:'Calibri'},
+    fill:{fgColor:{argb:TC}},
+    alignment:{horizontal:'center',vertical:'center'},
+  };
+  for(let c=0;c<nCols;c++) _xlS(ws,0,c,sTitleBase);
+  if(ws[_xlR(0,0)]) ws[_xlR(0,0)].v=opts.title;
+
+  // --- Style row 1: Info ---
+  const sInfo={
+    font:{bold:false,sz:10,color:{argb:TXTW},name:'Calibri'},
+    fill:{fgColor:{argb:TC}},
+    alignment:{horizontal:'center',vertical:'center'},
+  };
+  for(let c=0;c<nCols;c++) _xlS(ws,1,c,sInfo);
+
+  // --- Style row 2: empty spacer ---
+  const sSpacer={fill:{fgColor:{argb:TC}}};
+  for(let c=0;c<nCols;c++) _xlS(ws,2,c,sSpacer);
+
+  // --- Style row 3: Column headers ---
+  const sHeader={
+    font:{bold:true,sz:9,color:{argb:TXTW},name:'Calibri'},
+    fill:{fgColor:{argb:TC}},
+    alignment:{horizontal:'center',vertical:'center',wrapText:true},
+    border:_brd('FF888888'),
+  };
+  for(let c=0;c<nCols;c++) _xlS(ws,3,c,sHeader);
+
+  // --- Style data rows ---
+  const DATA_START=4;
+  const totalRows=allRows.length;
+  for(let ri=DATA_START;ri<totalRows;ri++){
+    const isOdd=(ri-DATA_START)%2===1;
+    const bgArgb=isOdd?ZEB:WHITE;
+    for(let ci=0;ci<nCols;ci++){
+      const def=opts.colDefs[ci];
+      const ref=_xlR(ri,ci);
+      if(!ws[ref]) ws[ref]={t:'z',v:''};
+      const cell=ws[ref];
+      // Alignment & number format by type
+      let align={horizontal:'left',vertical:'center',wrapText:true};
+      if(def.type==='num'||def.type==='int'){
+        align={horizontal:'right',vertical:'center'};
+        if(cell.t==='n'){
+          cell.z=def.type==='num'?'#,##0':'0';
+        }
+      } else if(def.type==='date'){
+        align={horizontal:'center',vertical:'center'};
+      }
+      cell.s={
+        fill:{fgColor:{argb:bgArgb}},
+        border:_brd(),
+        alignment:align,
+        font:{sz:9,name:'Calibri'},
+      };
+    }
+  }
+
+  // --- Row heights ---
+  ws['!rows']=[
+    {hpt:22},  // row 0: title
+    {hpt:15},  // row 1: info
+    {hpt:5},   // row 2: spacer
+    {hpt:32},  // row 3: header (2 lines)
+  ];
+
+  // --- Column widths ---
+  ws['!cols']=opts.colDefs.map(d=>({wch:d.wch||15}));
+
+  // --- Freeze: cố định 4 hàng đầu ---
+  ws['!freeze']={xSplit:0,ySplit:4};
+
+  // --- Ghi vào workbook ---
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,opts.sheetName);
+  XLSX.writeFile(wb,opts.filename);
+}
+
+// ================================================================
+// Export G1 – CHƯA PH HSMT
+// ================================================================
+function exportExcelG1(){
+  _ensureXLSX(function(){
+    const colDefs=[
+      {label:'STT',         wch:4,  type:'int'},
+      {label:'Mã CT',       wch:14, type:'text'},
+      {label:'Người PT',    wch:12, type:'text'},
+      {label:'Tên công trình', wch:35, type:'text'},
+      {label:'Hình thức',   wch:18, type:'text'},
+      {label:'Lĩnh vực',    wch:13, type:'text'},
+      {label:'Giá GT (tr.đ)', wch:12, type:'num'},
+      {label:'Lần lượt khảo sát (AC)', wch:32, type:'text'},
+      {label:'Trung vị (ngày)', wch:13, type:'int'},
+    ];
+    const dataRows=_g1Filtered.map((r,i)=>[
+      i+1,
+      r.mact||'',
+      r.nguoipt||'',
+      r.tenct||'',
+      r.ht||'',
+      r.linhvuc||'',
+      r.khaitoan!=null?r.khaitoan:null,
+      _lvText(r.lvAll),
+      r.tvNum!=null?r.tvNum:null,
+    ]);
+    _buildXlsxSheet({
+      title:'CHƯA PHÁT HÀNH HỒ SƠ MỜI THẦU (HSMT)',
+      tabColorHex:'00838F',
+      count:_g1Filtered.length,
+      colDefs,dataRows,
+      sheetName:'Chưa PH HSMT',
+      filename:'ChuaPH_HSMT_'+_dateTag()+'.xlsx',
+    });
+  });
+}
+
+// ================================================================
+// Export G2 – ĐÃ PH HSMT – CHƯA ĐÓNG THẦU
+// ================================================================
+function exportExcelG2(){
+  _ensureXLSX(function(){
+    const colDefs=[
+      {label:'STT',           wch:4,  type:'int'},
+      {label:'Mã CT',         wch:14, type:'text'},
+      {label:'Người PT',      wch:12, type:'text'},
+      {label:'Tên công trình',wch:35, type:'text'},
+      {label:'Hình thức',     wch:18, type:'text'},
+      {label:'Lĩnh vực',      wch:13, type:'text'},
+      {label:'Giá GT (tr.đ)', wch:12, type:'num'},
+      {label:'Đơn vị MT',     wch:16, type:'text'},
+      {label:'Ngày PH HSMT',  wch:14, type:'date'},
+      {label:'Ngày đóng thầu',wch:14, type:'date'},
+      {label:'Còn lại (ngày)',wch:12, type:'int'},
+      {label:'Trạng thái',    wch:14, type:'text'},
+      {label:'Trung vị (ngày)',wch:13, type:'int'},
+      {label:'Lần lượt khảo sát (AC)',wch:32, type:'text'},
+    ];
+    const dataRows=_g2Filtered.map((r,i)=>[
+      i+1,
+      r.mact||'',
+      r.nguoipt||'',
+      r.tenct||'',
+      r.ht||'',
+      r.linhvuc||'',
+      r.khaitoan!=null?r.khaitoan:null,
+      r.dvmt||'',
+      r.ngayPHStr||'',
+      r.ngayDStr||'',
+      r.daysLeft!=null?r.daysLeft:null,
+      r.trangthai||'',
+      r.tvNum!=null?r.tvNum:null,
+      _lvText(r.lvAll),
+    ]);
+    _buildXlsxSheet({
+      title:'ĐÃ PH HSMT – CHƯA ĐÓNG THẦU',
+      tabColorHex:'00796B',
+      count:_g2Filtered.length,
+      colDefs,dataRows,
+      sheetName:'Đã PH – Chưa đóng',
+      filename:'DaPH_ChuaDong_'+_dateTag()+'.xlsx',
+    });
+  });
+}
+
+// ================================================================
+// Export Warn – CẢNH BÁO TRUNG VỊ > 20 NGÀY
+// ================================================================
+function exportExcelWarn(){
+  _ensureXLSX(function(){
+    const list=allData.filter(r=>r.tvNum!==null&&r.tvNum>20).sort((a,b)=>b.tvNum-a.tvNum);
+    const colDefs=[
+      {label:'STT',           wch:4,  type:'int'},
+      {label:'Mã CT',         wch:14, type:'text'},
+      {label:'Người PT',      wch:12, type:'text'},
+      {label:'Tên công trình',wch:35, type:'text'},
+      {label:'Hình thức',     wch:18, type:'text'},
+      {label:'Lĩnh vực',      wch:13, type:'text'},
+      {label:'Giá GT (tr.đ)', wch:12, type:'num'},
+      {label:'Đơn vị MT',     wch:16, type:'text'},
+      {label:'Giai đoạn',     wch:18, type:'text'},
+      {label:'Trung vị (ngày)',wch:13, type:'int'},
+      {label:'Mức độ',        wch:11, type:'text'},
+      {label:'BC TG / Đóng thầu',wch:22, type:'text'},
+      {label:'Lần lượt khảo sát (AC)',wch:32, type:'text'},
+    ];
+    const dataRows=list.map((r,i)=>{
+      const sev=r.tvNum>=40?'Cao':(r.tvNum>=25?'Trung bình':'Thấp');
+      return [
+        i+1,
+        r.mact||'',
+        r.nguoipt||'',
+        r.tenct||'',
+        r.ht||'',
+        r.linhvuc||'',
+        r.khaitoan!=null?r.khaitoan:null,
+        r.dvmt||'',
+        r.gd.label||'',
+        r.tvNum,
+        sev,
+        r.bcTg.txt||'',
+        _lvText(r.lvAll),
+      ];
+    });
+    _buildXlsxSheet({
+      title:'CẢNH BÁO: GÓI THẦU TRUNG VỊ > 20 NGÀY',
+      tabColorHex:'E65100',
+      count:list.length,
+      colDefs,dataRows,
+      sheetName:'Cảnh báo TV>20 ngày',
+      filename:'CanhBao_TrungVi_'+_dateTag()+'.xlsx',
+    });
   });
 }
 
@@ -2040,7 +2417,3 @@ function initScrollBar(){
 
 </body>
 </html>
-
-
-
-
