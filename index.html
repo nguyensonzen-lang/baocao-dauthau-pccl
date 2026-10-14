@@ -726,6 +726,7 @@ tbody td:first-child{text-align:center;color:#aaa;font-size:11px;vertical-align:
         <option value="Quá hạn">Quá hạn</option>
       </select>
       <button class="btn-reset" onclick="resetFilters()">↺ Reset</button>
+      <button class="btn-excel" onclick="exportExcelMain()" title="Xuất Excel dữ liệu đang hiển thị">⬇ Xuất Excel</button>
       <span class="filter-count">Hiển thị: <strong id="f-show">0</strong> / <strong id="f-total">0</strong></span>
     </div>
     <div class="table-wrap">
@@ -2343,6 +2344,54 @@ function exportExcelWarn(){
       colDefs,dataRows,
       sheetName:'Cảnh báo TV>20 ngày',
       filename:'CanhBao_TrungVi_'+_dateTag()+'.xlsx',
+    });
+  });
+}
+
+// ================================================================
+// Export Main – DANH SÁCH GÓI THẦU (dữ liệu đang lọc)
+// ================================================================
+function exportExcelMain(){
+  _ensureXLSX(function(){
+    const colDefs=[
+      {label:'STT',                   wch:4,  type:'int'},
+      {label:'Mã CT',                 wch:14, type:'text'},
+      {label:'Người PT',              wch:12, type:'text'},
+      {label:'Tên công trình',        wch:38, type:'text'},
+      {label:'Hình thức',             wch:18, type:'text'},
+      {label:'Lĩnh vực',              wch:13, type:'text'},
+      {label:'Giá GT (tr.đ)',         wch:12, type:'num'},
+      {label:'Đơn vị MT',             wch:16, type:'text'},
+      {label:'Trạng thái',            wch:12, type:'text'},
+      {label:'Giai đoạn',             wch:18, type:'text'},
+      {label:'BC TG / Đóng thầu',     wch:22, type:'text'},
+      {label:'Trung vị (ngày)',        wch:13, type:'int'},
+      {label:'Ngày mở thầu DK',       wch:14, type:'date'},
+      {label:'Lần lượt khảo sát (AC)',wch:32, type:'text'},
+    ];
+    const dataRows=filtered.map((r,i)=>[
+      i+1,
+      r.mact||'',
+      r.nguoipt||'',
+      r.tenct||'',
+      r.ht||'',
+      r.linhvuc||'',
+      r.khaitoan!=null?r.khaitoan:null,
+      r.dvmt||'',
+      r.trangthai||'',
+      r.gd.label||'',
+      r.bcTg.txt||'',
+      r.tvNum!=null?r.tvNum:null,
+      r.ngayDStr||'',
+      _lvText(r.lvAll),
+    ]);
+    _buildXlsxSheet({
+      title:'DANH SÁCH GÓI THẦU ĐANG XỬ LÝ',
+      tabColorHex:'1A3A6B',
+      count:filtered.length,
+      colDefs,dataRows,
+      sheetName:'Danh sách gói thầu',
+      filename:'DanhSach_GoiThau_'+_dateTag()+'.xlsx',
     });
   });
 }
